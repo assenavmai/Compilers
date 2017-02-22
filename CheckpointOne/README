@@ -1,0 +1,38 @@
+CONTENTS OF THIS FILE
+----------------------
+
+* Introduction
+* Version Control
+* Requirements
+* Build & Run
+* Assumptions
+* Limitations
+
+INTRODUCTION
+-------------
+
+
+VERSION CONTROL
+----------------
+
+REQUIREMENTS
+-------------
+
+This program requires:
+
+    * lex
+    * yacc
+    * gcc
+
+BUILD & RUN
+------------
+
+    1)
+    2)
+    3)
+
+ASSUMPTIONS 
+-------------
+
+LIMITATIONS
+------------

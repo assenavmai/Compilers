@@ -1,0 +1,9 @@
+Information for CMinus Folder
+
+1.cm: compile without errors
+2.cm - 4.cm: Each .cm file should show various lexical and syntactic errors
+No more than 3 errors per program and each should show different aspects of the program
+5.cm: anything goes, the sky is the limit
+
+All testfiles should have a header describing the errors it contains and what errors that the compiler is testing against.
+
