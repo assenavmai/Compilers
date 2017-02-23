@@ -7,7 +7,7 @@ CC = gcc
 
 CFLAGS =
 
-OBJS =
+OBJS = y.tab.o lex.yy.o util.o 
 
 cm: $(OBJS)
 	$(CC) $(CFLAGS) $(OBJS) -o cm -ly -ll
