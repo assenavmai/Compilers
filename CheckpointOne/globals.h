@@ -14,6 +14,12 @@
 #include <ctype.h>
 #include <string.h>
 
+enum Conventions {
+
+	/* reserved words */
+	ELSE, IF, INT, RETURN, VOID, WHILE
+};
+
 
 
 #endif
