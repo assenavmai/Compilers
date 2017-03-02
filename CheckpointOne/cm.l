@@ -20,7 +20,7 @@
 digit                   [0-9]
 letter                  [a-zA-z]
 number                  {digit}{digit}*
-identifier              {letter}{letter}*
+identifier              [a-zA-z][a-zA-z]*
 whitespace              [ \t\n]+
 
 
