@@ -49,6 +49,10 @@ extern char * yytext;
 
 %% /* Grammar for C- */
 
+/***
+    Issues:
+        int x[10]; => int ID = x[  NEED TO FIX
+*/
 program         : decl_list
                 ;
 
@@ -67,9 +71,9 @@ var_decl        : type_spec ID SEMI
                 ;
 
 type_spec       : INT 
-                    {}
+                    { $$ = $1; }
                 | VOID
-                    {}
+                    { $$ = $1; }
                 ;
 
 fun_decl        : type_spec ID LPAREN params RPAREN compound_stmt
@@ -127,99 +131,99 @@ expr_stmt       : expr SEMI
 
 select_stmt     : IF LPAREN expr RPAREN stmt
                     {}
-                | IF LPAREN expr RPAREN stmt ELSE stmt /*conflict - dangling else*/
+                | IF LPAREN expr RPAREN stmt ELSE stmt
                     {}
                 ;
 
 iter_stmt       : WHILE LPAREN expr RPAREN stmt
-                   // {printf("%s\n", yytext);}
+                    {}
                 ;
 
 return_stmt     : RETURN SEMI
-                   // {printf("17. %s %s\n", $1, $2);}
+                    {}
                 | RETURN expr SEMI
-                   // {printf("%s\n", yytext);}
+                    {}
                 ;
 
 expr            : var EQ expr
-                  // {printf("%s\n", yytext);}
+                    {}
                 | simple_expr
-                   {printf("%s\n", yytext);}
+                    {}
                 ;
 
 var             : ID
-                   // {printf("19. %s\n", $1);}
+                    {}
                 | ID LBRAC expr RBRAC
-                  //  {printf("%s\n", yytext);}
+                    {}
                 ;
 
 simple_expr     : additive_expr relop additive_expr
-                   // {printf("%s\n", yytext);}
+                    {}
                 | additive_expr
-                    {printf("%s\n", yytext);}
+                    {}
                 ;
 
 relop           : LTEQ
-                   //{printf("21. %s\n", $1);}
+                    {}
                 | LT
-                   // {printf("21. %s\n", $1);}
+                    {}
                 | GT
-                    //{printf("21. %s\n", $1);}
+                    {}
                 | GTEQ
-                  // {printf("21. %s\n", $1);}
+                    {}
                 | DOUBEQ
-                   // {printf("21. %s\n", $1);}
+                    {}
                 | NEQ
-                   // {printf("21. %s\n", $1);}
+                    {}
                 ;
 
 additive_expr   : additive_expr addop term
-                   // {printf("%s\n", yytext);}
+                    {}
                 | term
-                    {printf("%s\n", yytext);}
+                    {}
                 ;
 
 addop           : PLUS
-                   // {printf("23. %s\n", $1);}
+                    {}
                 | MINUS
-                   // {printf("23. %s\n", $1);}
+                    {}
                 ;
 
 term            : term mulop factor
-                    //{printf("%s\n", yytext);}
+                    {}
                 | factor
-                    {printf("%s\n", yytext);}
+                    {}
                 ;
 
 mulop           : MULT
-                    //{printf("25. %s\n", $1);}
+                    {}
                 | DIV
-                   // {printf("25. %s\n", $1);}
+                   {}
                 ;
 
 factor          : LPAREN expr RPAREN
-                  // {printf("%s\n", yytext);}
+                    {}
                 | var
-                    //{printf("%s\n", yytext);}
+                    {}
                 | call
-                    //{printf("%s\n", yytext);}
+                    {}
                 | NUM
-                    {printf("26. %s\n", $1);}
+                    {}
                 ;
 
 call            : ID LPAREN args RPAREN
-                   // {printf("%s\n", yytext);}
+                    {}
                 ;
 
 args            : arg_list
-                    //{printf("%s\n", yytext);}
+                    {}
                 | epsilon
                 ;
 
 arg_list        : arg_list COMMA expr
-                   // {printf("%s\n", yytext);}
+                    {}
                 | expr
-                    //{printf("%s\n", yytext);}
+                    {}
                 ;
 
 epsilon         : ;                         
