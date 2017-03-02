@@ -9,8 +9,12 @@
 
     #include "globals.h"
     #include "y.tab.h"
-    int yylex(void);
+    #include "scan.h"
+    #include "util.h"
+
     void yyerror(char *);
+
+    char tokenString[MAXTOKENLEN+1];
 %}
 
 digit                   [0-9]
@@ -30,7 +34,7 @@ whitespace              [ \t\n]+
 "while"                 {return WHILE;}
 "+"                     {return PLUS;}
 "-"                     {return MINUS;}
-"*"                     {return TIMES;}
+"*"                     {return MULT;}
 "/"                     {return DIV;}
 "<"                     {return LT;}
 ">"                     {return GT;}
@@ -55,3 +59,15 @@ whitespace              [ \t\n]+
 .                       {printf("ERROR\n");}
 
 %%
+
+int getToken(void)
+{ 
+    int currentToken;
+
+    currentToken = yylex();
+    strncpy(tokenString, yytext, MAXTOKENLEN);
+
+    printToken(currentToken,tokenString);
+
+    return currentToken;
+}

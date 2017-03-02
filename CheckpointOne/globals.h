@@ -9,17 +9,20 @@
 #ifndef _GLOBALS_H_
 #define _GLOBALS_H_
 
+#ifndef FALSE
+#define FALSE 0
+#endif
+
+#ifndef TRUE
+#define TRUE 1
+#endif
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
 #include <string.h>
 
-/*enum Conventions {
 
-
-	ELSE, IF, INT, RETURN, VOID, WHILE
-};
-*/
 
 
 #endif
