@@ -35,6 +35,16 @@
 **/
 void printToken(int token, const char* tokenString);
 
+/**
+* void skipComments();
+* Used in: cm.l
+*
+* Skips multiline comments in the CMinus language
+*
+* @return none
+**/
+void skipComments();
+
 #endif
 
 

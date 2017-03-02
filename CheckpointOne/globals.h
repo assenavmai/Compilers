@@ -22,6 +22,9 @@
 #include <ctype.h>
 #include <string.h>
 
+extern int lineno; /* source line number for listing */
+
+
 
 
 

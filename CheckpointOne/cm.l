@@ -15,13 +15,18 @@
     void yyerror(char *);
 
     char tokenString[MAXTOKENLEN+1];
+
+    int lineno = 0;
 %}
+
+%x COMMENT
 
 digit                   [0-9]
 letter                  [a-zA-Z]
 number                  {digit}{digit}*
 identifier              {letter}{letter}*
-whitespace              [ \t\n]+
+newline                 \n
+whitespace              [ \t]+
 
 
 %%
@@ -51,8 +56,8 @@ whitespace              [ \t\n]+
 "]"                     {return RBRAC;}
 "{"                     {return LCURL;}
 "}"                     {return RCURL;}
-"/*"                    {printf("OPENCOMMENT\n");}
-"*/"                    {printf("CLOSECOMMENT\n");}
+"/*"                    { skipComments(); }
+{newline}               {lineno++;}
 {identifier}            {return ID;}
 {number}                {return NUM;}
 {whitespace}            { /* skip whitespace */ }
@@ -70,4 +75,38 @@ int getToken(void)
     printToken(currentToken,tokenString);
 
     return currentToken;
+}
+
+void skipComments()
+{
+    char c;
+    int done = 0;
+    do
+    {
+        c = input();
+        printf("C: %c ", c);
+
+        switch(c)
+        {
+            case EOF:
+                break;
+            case '\n':
+                lineno++;
+            case '*':
+                printf("star\n");
+                if((c = input()) == '/')
+                {
+                    done = 1;
+                }
+                else
+                {
+                    unput(c);
+                }
+                break;
+            default:
+                break;
+        }
+    }while(done != 1);
+
+    printf("end comment\n");
 }
