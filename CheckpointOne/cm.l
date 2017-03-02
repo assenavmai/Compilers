@@ -18,9 +18,9 @@
 %}
 
 digit                   [0-9]
-letter                  [a-zA-z]
+letter                  [a-zA-Z]
 number                  {digit}{digit}*
-identifier              [a-zA-z][a-zA-z]*
+identifier              {letter}{letter}*
 whitespace              [ \t\n]+
 
 

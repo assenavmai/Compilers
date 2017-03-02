@@ -65,15 +65,15 @@ decl            : var_decl
                 ;
 
 var_decl        : type_spec ID SEMI
-                    { }
+                    {}
                 | type_spec ID LBRAC NUM RBRAC SEMI
-                    { }
+                    {}
                 ;
 
 type_spec       : INT 
-                    { $$ = $1; }
+                    {}
                 | VOID
-                    { $$ = $1; }
+                    { }
                 ;
 
 fun_decl        : type_spec ID LPAREN params RPAREN compound_stmt
