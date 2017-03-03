@@ -6,9 +6,8 @@
 *************************************************/
 
 %{
-extern char * yytext;
     #define YYPARSER
-    #define YYSTYPE char *
+
     #include "globals.h"
 
     void yyerror(const char *str)
