@@ -21,6 +21,30 @@
 * @return
 **/
 
+/**
+* void printToken( int token, const char* tokenString )
+* Used in: util.c, cm.l
+*
+* prints the token that is scanned and parsed
+* 
+* @param token: token being processed
+* @param tokenString: description
+* @param name: description
+*
+* @return
+**/
+void printToken(int token, const char* tokenString);
+
+/**
+* void skipComments();
+* Used in: cm.l
+*
+* Skips multiline comments in the CMinus language
+*
+* @return none
+**/
+void skipComments();
+
 #endif
 
 

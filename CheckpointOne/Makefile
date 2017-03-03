@@ -7,7 +7,7 @@ CC = gcc
 
 CFLAGS =
 
-OBJS =
+OBJS = y.tab.o lex.yy.o util.o 
 
 cm: $(OBJS)
 	$(CC) $(CFLAGS) $(OBJS) -o cm -ly -ll
@@ -25,7 +25,7 @@ lex.yy.o: lex.yy.c globals.h util.h y.tab.h
 	$(CC) $(CFLAGS) -c lex.yy.c
 
 y.tab.c: cm.y
-	yacc -d -v cm.y
+	yacc -d -v cm.y -Wconflicts-sr
 
 y.tab.o: y.tab.c globals.h util.h scan.h parse.h
 	$(CC) $(CFLAGS) -c y.tab.c
