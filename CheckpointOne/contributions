@@ -4,11 +4,13 @@ Vanessa
 
     Scanner:
         
-        * 
+        * Built the regex.
+        * Added multiline comments.
 
     Parser:
         
-        *
+        * Added the rules (no embedded code).
+        * Connected parser and scanner.
 
     Error:
         
