@@ -9,6 +9,62 @@
 #include "util.h"
 #include "y.tab.h"
 
+
+struct TreeNode * newDeclNode(enum DeclKind dec) {
+
+	FILE * listing = stdout; 
+
+	struct TreeNode * node = (struct TreeNode *)malloc(sizeof(struct TreeNode));
+
+	int i;
+
+	if(!node)
+	{
+		fprintf(listing, "error: Out of memory at line %d\n", lineno);
+	}
+	else
+	{
+		for(i = 0; i < MAXCHILDREN; i++)
+		{
+			node->child[i] = NULL;
+		}
+
+
+		node->sibling = NULL;
+		node->nodeType = DeclType;
+		node->kind.dec = dec;
+		node->pos = lineno;
+	}
+
+	return node;
+}
+
+char * allocateString(char  * str) {
+
+	char * newString;
+	FILE * listing = stdout;
+
+	printf("Allocate String: %s\n", str);
+
+	if(!str)
+	{
+		return NULL;
+	}
+
+	newString = malloc(sizeof(str) * strlen(str) + 1);
+
+	if(!newString)
+	{
+		fprintf(listing, "error: Out of memory at line %d\n", lineno);
+	}
+	else
+	{
+		strcpy(newString, str);
+	}
+
+	return newString;
+}
+
 /* prints a token and its lexeme to the listing file
  */
 void printToken(int token, const char* tokenString)

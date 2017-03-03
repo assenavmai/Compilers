@@ -58,7 +58,7 @@ whitespace              [ \t]+
 "}"                     {return RCURL;}
 "/*"                    { skipComments(); }
 {newline}               {lineno++;}
-{identifier}            {return ID;}
+{identifier}            { return ID;}
 {number}                {return NUM;}
 {whitespace}            { /* skip whitespace */ }
 .                       {printf("ERROR\n");}
@@ -72,6 +72,7 @@ int getToken(void)
     currentToken = yylex();
     strncpy(tokenString, yytext, MAXTOKENLEN);
 
+    printf("LEX ");
     printToken(currentToken,tokenString);
 
     return currentToken;
@@ -84,7 +85,6 @@ void skipComments()
     do
     {
         c = input();
-        printf("C: %c ", c);
 
         switch(c)
         {
@@ -93,7 +93,6 @@ void skipComments()
             case '\n':
                 lineno++;
             case '*':
-                printf("star\n");
                 if((c = input()) == '/')
                 {
                     done = 1;

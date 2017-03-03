@@ -9,10 +9,19 @@
     #define YYPARSER
 
     #include "globals.h"
+    #include "util.h"
+    #include "scan.h"
+
+    #define YYSTYPE struct TreeNode *
+
+    extern FILE * yyin;
+    static struct TreeNode * syntaxTree; /* save the syntax tree to be returned */
+    static char * savedName; /* for use in assignments */
+    static int savedLineNo;  /* ditto */
 
     void yyerror(const char *str)
     {
-            fprintf(stderr,"error: %s\n",str);
+            fprintf(stderr,"error: %s %d\n",str, lineno);
     }
 
     int yywrap()
@@ -20,12 +29,12 @@
             return 1;
     } 
 
-    static int yylex(void)
+   static int yylex(void)
     { return getToken(); }
   
     main()
     {
-
+        yyin = fopen("test", "r");
         yyparse();
 
         return 0;
@@ -53,6 +62,7 @@
         int x[10]; => int ID = x[  NEED TO FIX
 */
 program         : decl_list
+                    { syntaxTree = $1; } //root of tree
                 ;
 
 decl_list       : decl_list decl
@@ -60,23 +70,30 @@ decl_list       : decl_list decl
                 ;
 
 decl            : var_decl
+                    { $$ = $1; }
                 | fun_decl 
+                    { }
                 ;
 
 var_decl        : type_spec ID SEMI
-                    {}
+                    { 
+                        $$ = newDeclNode(VarK);
+
+                    }
                 | type_spec ID LBRAC NUM RBRAC SEMI
-                    {}
+                    { }
                 ;
 
 type_spec       : INT 
-                    {}
+                    { 
+
+                    }
                 | VOID
                     { }
                 ;
 
 fun_decl        : type_spec ID LPAREN params RPAREN compound_stmt
-                    {}
+                    { }
                 ;
 
 params          : param_list 

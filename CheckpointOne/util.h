@@ -45,6 +45,9 @@ void printToken(int token, const char* tokenString);
 **/
 void skipComments();
 
+struct TreeNode * newDeclNode(enum DeclKind dec);
+char * allocateString(char  * str);
+
 #endif
 
 
