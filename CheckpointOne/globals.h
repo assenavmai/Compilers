@@ -33,6 +33,8 @@ enum StmtKind { IfK, ReturnK, WhileK, CmpdK };
 enum ExpKind  { OpK, ConstK, IdK, CallK, SubsK };
 enum DeclKind { VarK, FunK, ParamK };
 
+enum ExpType {Void,Integer};
+
 struct TreeNode {
 
 	struct TreeNode * child[MAXCHILDREN];
@@ -45,6 +47,7 @@ struct TreeNode {
 	union {
 		enum StmtKind stmt;
 		enum ExpKind exp;
+		enum DeclKind dec;
 	}kind;
 
 	union {
@@ -52,6 +55,8 @@ struct TreeNode {
 		int val;
 		char * name;
 	}attr;
+
+	enum ExpType type;
 
 };
 
