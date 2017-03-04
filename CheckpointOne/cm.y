@@ -80,7 +80,24 @@ program         : decl_list
 
 decl_list       : decl_list decl
                     {
-                        
+                        struct TreeNode * temp;
+                        temp = $1.tnode;
+
+                        if(temp)
+                        {
+                            while(temp->sibling)
+                            {
+                                temp = temp->sibling;
+                            }
+                            temp->sibling = $2.tnode;
+                            $$.tnode = $1.tnode;
+                        }
+                        else
+                        {
+                            printf("decl no");
+                            $$.tnode = $2.tnode;
+                        }
+                        printf("decl list\n");
                     }
 
                 | decl
@@ -93,33 +110,31 @@ decl            : var_decl
                     { $$.tnode = $1.tnode; }
                 ;
 
-var_decl        : type_spec ID SEMI /*check type in tree */
+var_decl        : type_spec ID {    savedName = copyString(idString); 
+                                    savedLineNo = lineno; } 
+                    SEMI 
                     { 
                         $$.tnode = newDeclNode(VarK);
-                        $$.tnode->name = copyString(idString);
-                        $$.tnode->type = $1.str;
+                        $$.tnode->name = savedName;
                         $$.tnode->etype = $1.type;
-                        $$.tnode->pos = lineno;
+                        $$.tnode->pos = savedLineNo;
                     }
-                | type_spec ID LBRAC NUM RBRAC SEMI
+                | type_spec ID {    savedName = copyString(idString); 
+                                    savedLineNo = lineno; } 
+                    LBRAC NUM RBRAC SEMI
                     { 
                         $$.tnode = newDeclNode(VarK);
-                        $$.tnode->type = copyString("Array");
+                        $$.tnode->name = savedName;
                         $$.tnode->etype = Array;
-                        $$.tnode->name = copyString(idString);
                         $$.tnode->val = atoi(numString);
-                        $$.tnode->pos = lineno;
+                        $$.tnode->pos = savedLineNo;
                     }
                 ;
 
 type_spec       : INT 
-                    { 
-                        $$.type = Integer;
-                    }
+                    { $$.type = Integer; }
                 | VOID
-                    { 
-                        $$.type = Void;
-                    }
+                    { $$.type = Void; }
                 ;
 
 fun_decl        : type_spec ID { savedName = copyString(idString);
@@ -130,21 +145,16 @@ fun_decl        : type_spec ID { savedName = copyString(idString);
 
                         $$.tnode->name = savedName;
                         $$.tnode->etype = $1.type;
-                        $$.tnode->type = $1.str;
-                        $$.tnode->pos = lineno;
+                        $$.tnode->pos = savedLineNo;
                         $$.tnode->child[0] = $5.tnode;
                         $$.tnode->child[1] = $7.tnode;
                     }   
                 ;
 
 params          : param_list
-                    {
-                        $$.tnode = $1.tnode;
-                    } 
+                    { $$.tnode = $1.tnode; } 
                 | VOID
-                    {
-
-                    }
+                    {}
                 ;
 
 param_list      : param_list COMMA param
@@ -152,17 +162,29 @@ param_list      : param_list COMMA param
                         /* sibling stuff */
                         struct TreeNode * temp;
                         temp = $1.tnode;
-                        if(temp->sibling == NULL)
+
+                        if(temp)
                         {
-                            printf("null");
+                            while(temp->sibling)
+                            {
+                                printf("sib %s\n", temp->name);
+
+                                temp = temp->sibling;
+                                printf("sib %s\n", temp->name);
+                            }
                             temp->sibling = $3.tnode;
+                            $$.tnode = $1.tnode;
                         }
+                        else
+                        {
+                            printf("param no");
+                            $$.tnode = $3.tnode;
+                        }
+
                         printf("ys\n");
                     }
                 | param
-                    { 
-                        $$.tnode = $1.tnode;
-                    }
+                    { $$.tnode = $1.tnode; }
                 ;
 
 param           : type_spec ID 
@@ -170,15 +192,15 @@ param           : type_spec ID
                         $$.tnode = newDeclNode(ParamK);
                         $$.tnode->pos = lineno;
                         $$.tnode->name = copyString(idString);
-                        $$.tnode->type = $1.str;
                         $$.tnode->etype = $1.type;
                     }
-                | type_spec ID LBRAC RBRAC
+                | type_spec ID {    savedName = copyString(idString);
+                                    savedLineNo = lineno; }
+                    LBRAC RBRAC
                     {
                         $$.tnode = newDeclNode(ParamK);
-                        $$.tnode->pos = lineno;
-                        $$.tnode->name = copyString(idString);
-                        $$.tnode->type = $1.str;
+                        $$.tnode->pos = savedLineNo;
+                        $$.tnode->name = savedName;
                         $$.tnode->etype = Array;
                     }
                 ;
@@ -194,6 +216,25 @@ compound_stmt   : LCURL local_decl stmt_list RCURL
 local_decl      : local_decl var_decl
                     {
                         /*sibling stuff */
+                        struct TreeNode * temp;
+                        temp = $1.tnode;
+
+                        if(temp)
+                        {
+                            while(temp->sibling)
+                            {
+                                temp = temp->sibling;
+                            }
+                            temp->sibling = $2.tnode;
+                            $$.tnode = $1.tnode;
+
+                        }
+                        else
+                        {
+                            printf("local no");
+                            $$.tnode = $2.tnode;
+                        }
+                        printf("local\n");
                     }
                 | epsilon { $$.tnode = NULL; }
                 ;
@@ -201,6 +242,24 @@ local_decl      : local_decl var_decl
 stmt_list       : stmt_list stmt
                     {
                         /* sibling stuff */
+                        struct TreeNode * temp;
+                        temp = $1.tnode;
+
+                        if(temp)
+                        {
+                            while(temp->sibling)
+                            {
+                                temp = temp->sibling;
+                            }
+                            temp->sibling = $2.tnode;
+                            $$.tnode = $1.tnode;
+                        }
+                        else
+                        {
+                            printf("stmt no");
+                            $$.tnode = $2.tnode;
+                        }
+                        printf("stmt list\n");
                     }
                 | epsilon { $$.tnode = NULL; }
                 ;
@@ -275,12 +334,14 @@ var             : ID
                         $$.tnode = newExpNode(IdK);
                         $$.tnode->name = copyString(idString);
                     }
-                | ID LBRAC expr RBRAC
+                | ID {  savedName = copyString(idString);
+                        savedLineNo = lineno; }
+                    LBRAC expr RBRAC
                     {
                         $$.tnode = newExpNode(IdK);
-                        $$.tnode->name = copyString(idString);
-                        $$.tnode->pos = lineno;
-                        $$.tnode->child[0] = $3.tnode;
+                        $$.tnode->name = savedName;
+                        $$.tnode->pos = savedLineNo;
+                        $$.tnode->child[0] = $4.tnode;
                     }
                 ;
 
@@ -358,12 +419,14 @@ factor          : LPAREN expr RPAREN
                     }
                 ;
 
-call            : ID LPAREN args RPAREN
+call            : ID {  savedName = copyString(idString);
+                        savedLineNo = lineno; }
+                    LPAREN args RPAREN
                     {
                         $$.tnode = newStmtNode(CallK);
-                        $$.tnode->name = copyString(idString);
-                        $$.tnode->child[0] = $3.tnode;
-                        $$.tnode->pos = lineno;
+                        $$.tnode->name = savedName;
+                        $$.tnode->child[0] = $4.tnode;
+                        $$.tnode->pos = savedLineNo;
                     }
                 ;
 
@@ -375,6 +438,24 @@ args            : arg_list
 arg_list        : arg_list COMMA expr
                     {
                         /* siblng stuff */
+                        struct TreeNode * temp;
+                        temp = $1.tnode;
+
+                        if(temp)
+                        {
+                            while(temp->sibling)
+                            {
+                                temp = temp->sibling;
+                            }
+                            temp->sibling = $3.tnode;
+                            $$.tnode = $1.tnode;
+                        }
+                        else
+                        {
+                            printf("arg list no");
+                            $$.tnode = $3.tnode;
+                        }
+                        printf("arg list\n");
                     }
                 | expr
                     { $$.tnode = $1.tnode; }

@@ -187,6 +187,8 @@ void printToken(int token, const char* tokenString)
 }
 
 
+
+
 // used by printTree to store current number of spaces to indent
 static indentno = 0;
 
@@ -237,7 +239,7 @@ void printTree(struct TreeNode * tree)
 			    case CallK:
 			    	fprintf(listing, "%s()\n", tree->name);
 			    default:
-			      fprintf(listing,"Unknown ExpNode kind\n");
+			      fprintf(listing,"Unknown ExpNode kind %s %d\n", tree->name, tree->nodeKind);
 			      break;
 			  }
 		}

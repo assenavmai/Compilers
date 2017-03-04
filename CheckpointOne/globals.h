@@ -44,7 +44,6 @@ struct TreeNode {
 	int op;
 	int val;
 	char * name;
-	char * type;
 	enum NodeKind nodeKind;
 	enum ExpType etype;
 	union {
