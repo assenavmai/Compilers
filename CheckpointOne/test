@@ -1,6 +1,5 @@
-int gcd (int x, int y)
+int gcd (int u, int v)
 {
-	while(x == 1)
-		if(x > 2) x = x - 2; else x = x - x;
-	return x;
+	if( v == 0 ) return u ;
+	else return gcd(v, u-u/v*v);
 }

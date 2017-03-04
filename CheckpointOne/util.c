@@ -228,7 +228,7 @@ void printTree(struct TreeNode * tree)
 			      fprintf(listing,"While");
 			      break;
 			    case CmpdK:
-			      fprintf(listing,"Compound\n");
+			      fprintf(listing,"Compound:\n");
 			      break;
 			    case AssignK:
 			      fprintf(listing,"Assign operation: ");
@@ -277,12 +277,14 @@ void printTree(struct TreeNode * tree)
 					}
 					break;
 				case FunK:
+					fprintf(listing, "Function: ");
 					printTypeSpec(tree->etype);
-					fprintf(listing, "Function: %s()\n",tree->name);
+					fprintf(listing, "%s()\n",tree->name);
 					break;
 				case ParamK:
+					fprintf(listing, "Params: ");
 					printTypeSpec(tree->etype);
-					fprintf(listing, "Params: %s\n", tree->name);
+					fprintf(listing, "%s\n", tree->name);
 					break;
 			}
 		}

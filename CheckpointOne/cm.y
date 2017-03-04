@@ -32,7 +32,7 @@
 
     void yyerror(const char *str)
     {
-            fprintf(stderr,"error: %s %d\n",str, lineno);
+            fprintf(stderr,"error: %s %d %s\n",str, lineno, tokenString);
     }
 
     int yywrap()
@@ -60,7 +60,7 @@
 
 %}
 
-%token ELSE IF INT RETURN VOID WHILE
+%token IF ELSE INT RETURN VOID WHILE
 %token ID NUM
 %token PLUS MINUS MULT DIV LT GT LTEQ GTEQ DOUBEQ NEQ EQ SEMI COMMA LPAREN RPAREN LBRAC RBRAC LCURL RCURL 
 %token ERROR
@@ -79,7 +79,10 @@ program         : decl_list
                 ;
 
 decl_list       : decl_list decl
-                    /* sibling stuff */
+                    {
+                        
+                    }
+
                 | decl
                     {  $$.tnode = $1.tnode; }
                 ;
@@ -119,15 +122,18 @@ type_spec       : INT
                     }
                 ;
 
-fun_decl        : type_spec ID LPAREN params RPAREN compound_stmt
+fun_decl        : type_spec ID { savedName = copyString(idString);
+                                savedLineNo = lineno; } 
+                    LPAREN params RPAREN compound_stmt
                     {
                         $$.tnode = newDeclNode(FunK);
-                        $$.tnode->name = copyString(idString);
+
+                        $$.tnode->name = savedName;
                         $$.tnode->etype = $1.type;
                         $$.tnode->type = $1.str;
                         $$.tnode->pos = lineno;
-                        $$.tnode->child[0] = $4.tnode;
-                        $$.tnode->child[1] = $6.tnode;
+                        $$.tnode->child[0] = $5.tnode;
+                        $$.tnode->child[1] = $7.tnode;
                     }   
                 ;
 
@@ -144,6 +150,14 @@ params          : param_list
 param_list      : param_list COMMA param
                     {
                         /* sibling stuff */
+                        struct TreeNode * temp;
+                        temp = $1.tnode;
+                        if(temp->sibling == NULL)
+                        {
+                            printf("null");
+                            temp->sibling = $3.tnode;
+                        }
+                        printf("ys\n");
                     }
                 | param
                     { 
