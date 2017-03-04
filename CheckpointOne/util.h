@@ -48,9 +48,8 @@ void skipComments();
 struct TreeNode * newDeclNode(enum DeclKind dec);
 struct TreeNode * newExpNode(enum ExpKind exp);
 struct TreeNode * newStmtNode(enum StmtKind stmt);
-struct TreeNode * newTypeSpecNode(enum TypeSpec ts);
 void printTree( struct TreeNode * tree );
-char * allocateString(char  * str);
+char * copyString(char  * str);
 
 #endif
 

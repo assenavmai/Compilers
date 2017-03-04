@@ -28,12 +28,12 @@
 extern int lineno; /* source line number for listing */
 
 /* The type of statements for the CMinus language */
-enum NodeType { StmtType, ExpType, DeclType, SpecType };
-enum StmtKind { IfK, ReturnK, WhileK, CmpdK };
-enum ExpKind  { OpK, ConstK, IdK, CallK, SubsK };
+enum NodeKind { StmtKind, ExpKind, DeclKind, SpecKind };
+enum StmtKind { IfK, ReturnK, WhileK, CmpdK, AssignK, CallK };
+enum ExpKind  { OpK, ConstK, IdK};
 enum DeclKind { VarK, FunK, ParamK };
 
- enum TypeSpec {Void,Integer}; 
+ enum ExpType {Void,Integer, Array}; 
 
 struct TreeNode {
 
@@ -41,23 +41,26 @@ struct TreeNode {
 	struct TreeNode * sibling;
 
 	int pos;
-
-	enum NodeType nodeType;
-
+	int op;
+	int val;
+	char * name;
+	char * type;
+	enum NodeKind nodeKind;
+	enum ExpType etype;
 	union {
 		enum StmtKind stmt;
 		enum ExpKind exp;
 		enum DeclKind dec;
-		enum TypeSpec ts;
+	//	enum TypeSpec ts;
 	}kind;
 
-	union {
+	/*union {
 		int op;
 		int val;
 		char * name;
-	}attr;
+	}attr;*/
 
-	 enum TypeSpec type; 
+	// enum TypeSpec type; 
 
 };
 

@@ -16,7 +16,7 @@
 
     char tokenString[MAXTOKENLEN+1];
     char idString[MAXTOKENLEN+1];
-
+    char numString[MAXTOKENLEN+1];
 
     int lineno = 0;
 %}
@@ -61,7 +61,7 @@ whitespace              [ \t]+
 "/*"                    { skipComments(); }
 {newline}               {lineno++;}
 {identifier}            { strcpy(idString, yytext); printf("lex: %s\n", idString); return ID;}
-{number}                {return NUM;}
+{number}                { strcpy(numString, yytext); return NUM;}
 {whitespace}            { /* skip whitespace */ }
 .                       {printf("ERROR\n");}
 

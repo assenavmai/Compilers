@@ -31,37 +31,8 @@ struct TreeNode * newDeclNode(enum DeclKind dec) {
 
 
 		node->sibling = NULL;
-		node->nodeType = DeclType;
+		node->nodeKind = DeclKind;
 		node->kind.dec = dec;
-		node->pos = lineno;
-	}
-
-	return node;
-}
-
-struct TreeNode * newTypeSpecNode(enum TypeSpec ts) {
-
-	FILE * listing = stdout; 
-
-	struct TreeNode * node = (struct TreeNode *)malloc(sizeof(struct TreeNode));
-
-	int i;
-
-	if(!node)
-	{
-		fprintf(listing, "error: Out of memory at line %d\n", lineno);
-	}
-	else
-	{
-		for(i = 0; i < MAXCHILDREN; i++)
-		{
-			node->child[i] = NULL;
-		}
-
-
-		node->sibling = NULL;
-		node->nodeType =  SpecType;
-		node->kind.ts = ts;
 		node->pos = lineno;
 	}
 
@@ -88,9 +59,8 @@ struct TreeNode * newExpNode(enum ExpKind exp) {
 			node->child[i] = NULL;
 		}
 
-
 		node->sibling = NULL;
-		node->nodeType = ExpType;
+		node->nodeKind = ExpKind;
 		node->kind.exp = exp;
 		node->pos = lineno;
 	}
@@ -119,7 +89,7 @@ struct TreeNode * newStmtNode(enum StmtKind stmt) {
 
 
 		node->sibling = NULL;
-		node->nodeType = StmtType;
+		node->nodeKind = StmtKind;
 		node->kind.stmt = stmt;
 		node->pos = lineno;
 	}
@@ -127,12 +97,10 @@ struct TreeNode * newStmtNode(enum StmtKind stmt) {
 	return node;
 }
 
-char * allocateString(char  * str) {
+char * copyString(char  * str) {
 
 	char * newString;
 	FILE * listing = stdout;
-
-	printf("Allocate String: %s\n", str);
 
 	if(!str)
 	{
@@ -203,66 +171,4 @@ void printToken(int token, const char* tokenString)
 	    default: /* should never happen */
 	      fprintf(listing,"Unknown token: %d\n",token);
   }
-}
-
-
-
-
-/* used by printTree to store current number of spaces to indent
- */
-static int indentno = 0;
-
-/* macros to increase/decrease indentation */
-#define INDENT indentno += 2
-#define UNINDENT indentno -= 2
-
-/* printSpaces indents by printing spaces */
-static void printSpaces(void)
-{ 
-	FILE * listing = stdout;
-
-	int i;
-  	for(i=0;i<indentno;i++)
-  	{
-    	fprintf(listing," ");
-  	}
-}
-
-/* prints a syntax tree to the listing file using indentation to indicate subtrees
- */
-void printTree( struct TreeNode * tree )
-{ 
-	int i;
-  	INDENT;
-	FILE * listing = stdout;
-  	//while (tree != NULL) 
-  	//{
-    	printSpaces();
-
-    	if (tree->nodeType == DeclType)
-    	{ 
-    		switch (tree->kind.dec) 
-    		{
-		        case VarK:
-		          fprintf(listing,"Var Decl: %s\n", tree->attr.name);
-		          break;
-		        case FunK:
-		          fprintf(listing,"Function Decl: %s()\n",tree->attr.name);
-		          break;
-		        case ParamK:
-		          fprintf(listing,"Read: %s\n",tree->attr.name);
-		          break;
-		        default:
-		          fprintf(listing,"Unknown StmtNode kind\n");
-		          break;
-      		}
-    	}
-
-    //}
-    /*else fprintf(listing,"Unknown node kind\n");
-    for (i=0;i<MAXCHILDREN;i++)
-         printTree(tree->child[i]);
-    tree = tree->sibling;*/
- 
-  UNINDENT;
 }
