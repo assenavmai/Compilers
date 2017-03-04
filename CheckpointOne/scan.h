@@ -14,6 +14,8 @@
 
 /* tokenString array stores the lexeme of each token */
 extern char tokenString[MAXTOKENLEN+1];
+extern char idString[MAXTOKENLEN+1];
+
 
 
 /**

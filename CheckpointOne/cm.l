@@ -15,6 +15,8 @@
     void yyerror(char *);
 
     char tokenString[MAXTOKENLEN+1];
+    char idString[MAXTOKENLEN+1];
+
 
     int lineno = 0;
 %}
@@ -49,7 +51,7 @@ whitespace              [ \t]+
 "!="                    {return NEQ;}
 "="                     {return EQ;}
 ";"                     {return SEMI;}
-","                     {return COMMA;}
+","                     {return COMMA;} 
 "("                     {return LPAREN;}
 ")"                     {return RPAREN;}
 "["                     {return LBRAC;}
@@ -58,7 +60,7 @@ whitespace              [ \t]+
 "}"                     {return RCURL;}
 "/*"                    { skipComments(); }
 {newline}               {lineno++;}
-{identifier}            { return ID;}
+{identifier}            { strcpy(idString, yytext); printf("lex: %s\n", idString); return ID;}
 {number}                {return NUM;}
 {whitespace}            { /* skip whitespace */ }
 .                       {printf("ERROR\n");}
@@ -72,8 +74,10 @@ int getToken(void)
     currentToken = yylex();
     strncpy(tokenString, yytext, MAXTOKENLEN);
 
-    printf("LEX ");
-    printToken(currentToken,tokenString);
+   // printf("LEX ");
+   // printToken(currentToken,tokenString);
+
+  //  printf("CUrrent %d %s\n", currentToken, tokenString);
 
     return currentToken;
 }

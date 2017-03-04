@@ -11,6 +11,7 @@
     #include "globals.h"
     #include "util.h"
     #include "scan.h"
+    #include "parse.h"
 
     #define YYSTYPE struct TreeNode *
 
@@ -40,77 +41,130 @@
         return 0;
     }
 
+    struct TreeNode * parse(void) { 
+    yyin = fopen("test", "r");
+        yyparse();
+        return syntaxTree;
+    }
+
 
 %}
-
-
 
 %token ELSE IF INT RETURN VOID WHILE
 %token ID NUM
 %token PLUS MINUS MULT DIV LT GT LTEQ GTEQ DOUBEQ NEQ EQ SEMI COMMA LPAREN RPAREN LBRAC RBRAC LCURL RCURL 
 %token ERROR
 
-%nonassoc LT GT
+%nonassoc LT GT LTEQ GTEQ
 %left PLUS MINUS
 %left MULT DIV
 
 
 %% /* Grammar for C- */
 
-/***
-    Issues:
-        int x[10]; => int ID = x[  NEED TO FIX
-*/
+
 program         : decl_list
                     { syntaxTree = $1; } //root of tree
                 ;
 
 decl_list       : decl_list decl
+                    /* sibling stuff */
                 | decl
+                    { $$ = $1; }
                 ;
 
 decl            : var_decl
                     { $$ = $1; }
                 | fun_decl 
-                    { }
+                    { $$ = $1; }
                 ;
 
-var_decl        : type_spec ID SEMI
+var_decl        : type_spec ID SEMI /*check type in tree */
                     { 
+                        printf("Var ID: %s\n", idString);
+                        savedName = allocateString(idString);
+                        savedLineNo = lineno;
                         $$ = newDeclNode(VarK);
-
+                        $$->attr.name = savedName;
+                        $$->pos = savedLineNo;
+                        $$->child[0] = $1;
                     }
                 | type_spec ID LBRAC NUM RBRAC SEMI
-                    { }
+                    { 
+                        printf("Var(Array) ID: %s\n", idString);
+                        savedName = allocateString(idString);
+                        savedLineNo = lineno;
+                        $$ = newDeclNode(VarK);
+                        $$->attr.name = savedName;
+                        $$->pos = savedLineNo;
+                        $$->child[0] = $1;
+                    }
                 ;
 
 type_spec       : INT 
                     { 
-
+                        $$ = newTypeSpecNode(Integer);
+                        $$->type = Integer;
+                        /* $$->type = Integer; segfaults */
                     }
                 | VOID
-                    { }
+                    { 
+                        $$ = newTypeSpecNode(Void);
+                        $$->type = Void;
+                        /* $$->type = Void; segfaults */
+                    }
                 ;
 
-fun_decl        : type_spec ID LPAREN params RPAREN compound_stmt
-                    { }
+fun_decl        : type_spec ID { savedName = allocateString(idString);
+                                 savedLineNo = lineno; } 
+                    LPAREN params RPAREN compound_stmt
+                    {
+
+                        $$ = newDeclNode(FunK);
+                        $$->child[0] = $1;
+                        $$->child[1] = $4;
+                        $$->child[2] = $6;
+                        $$->attr.name = savedName;
+                        $$->pos = savedLineNo;
+                        printf("Function name: %s\n", $$->attr.name);
+                    }   
                 ;
 
-params          : param_list 
+params          : param_list
+                    { $$ = $1; } 
                 | VOID
-                    {}
+                    {
+                        $$ = newDeclNode(ParamK);
+                        $$->type = Void;
+                    }
                 ;
 
 param_list      : param_list COMMA param
-                    {}
+                    {
+                        $$ = newDeclNode(ParamK);
+                        $$->child[0] = $1;
+                        $$->child[1] = $3;
+                    }
                 | param
-                    {}
+                    { $$ = $1; }
                 ;
 
 param           : type_spec ID 
-                    {}
+                    {
+                        savedName = allocateString(idString);
+                        savedLineNo = lineno;
+                        $$ = newDeclNode(ParamK);
+                        $$->attr.name = savedName;
+                        $$->pos = lineno;
+                        printf("Function Param: %s\n",idString);
+
+                        $$->child[0];
+
+                    }
                 | type_spec ID LBRAC RBRAC
-                    {}
+                    {
+
+                    }
                 ;
 
 compound_stmt   : LCURL local_decl stmt_list RCURL

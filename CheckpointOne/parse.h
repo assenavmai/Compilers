@@ -21,5 +21,8 @@
 *
 * @return
 **/
+/* returns the newly constructed syntax tree
+ */
+struct TreeNode * parse(void);
 
 #endif

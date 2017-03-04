@@ -9,6 +9,10 @@
 
 int main(int argc, char const *argv[])
 {
-	/* code */
+	struct TreeNode * syntaxTree;
+	
+	syntaxTree = parse();
+    fprintf(stdout,"\nSyntax tree:\n");
+    printTree(syntaxTree);
 	return 0;
 }
