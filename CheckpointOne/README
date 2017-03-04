@@ -40,7 +40,7 @@ BUILD & RUN
 ASSUMPTIONS 
 -------------
 
-	* 
+	* An array will always be of type int.
 
 LIMITATIONS
 ------------

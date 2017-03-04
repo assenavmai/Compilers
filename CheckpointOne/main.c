@@ -6,13 +6,16 @@
 *************************************************/
 
 #include "globals.h"
+#include "util.h"
+#include "scan.h"
+#include "parse.h"
 
 int main(int argc, char const *argv[])
 {
-	struct TreeNode * syntaxTree;
+	struct TreeNode * tree;
 	
-	syntaxTree = parse();
+	tree = parse();
     fprintf(stdout,"\nSyntax tree:\n");
-    printTree(syntaxTree);
+    printTree(tree);
 	return 0;
 }

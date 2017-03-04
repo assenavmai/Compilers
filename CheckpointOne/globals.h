@@ -33,7 +33,7 @@ enum StmtKind { IfK, ReturnK, WhileK, CmpdK, AssignK, CallK };
 enum ExpKind  { OpK, ConstK, IdK};
 enum DeclKind { VarK, FunK, ParamK };
 
- enum ExpType {Void,Integer, Array}; 
+enum ExpType {Void,Integer, Array};  /* Type specifiers */
 
 struct TreeNode {
 

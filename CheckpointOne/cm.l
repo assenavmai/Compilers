@@ -60,7 +60,7 @@ whitespace              [ \t]+
 "}"                     {return RCURL;}
 "/*"                    { skipComments(); }
 {newline}               {lineno++;}
-{identifier}            { strcpy(idString, yytext); printf("lex: %s\n", idString); return ID;}
+{identifier}            { strcpy(idString, yytext); return ID;}
 {number}                { strcpy(numString, yytext); return NUM;}
 {whitespace}            { /* skip whitespace */ }
 .                       {printf("ERROR\n");}

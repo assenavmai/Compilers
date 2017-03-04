@@ -1,4 +1,4 @@
-int gcd (int x)
+int gcd (int x, int y)
 {
 	while(x == 1)
 		if(x > 2) x = x - 2; else x = x - x;

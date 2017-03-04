@@ -121,8 +121,21 @@ char * copyString(char  * str) {
 	return newString;
 }
 
-/* prints a token and its lexeme to the listing file
- */
+void printTypeSpec(enum ExpType type)
+{
+	FILE * listing = stdout;
+
+	switch(type)
+	{
+		case Void:
+			fprintf(listing, "void ");
+			break;
+		case Integer:
+			fprintf(listing, "int ");
+			break;
+	}
+}
+
 void printToken(int token, const char* tokenString)
 { 
 	FILE * listing = stdout;
@@ -171,4 +184,119 @@ void printToken(int token, const char* tokenString)
 	    default: /* should never happen */
 	      fprintf(listing,"Unknown token: %d\n",token);
   }
+}
+
+
+// used by printTree to store current number of spaces to indent
+static indentno = 0;
+
+/* macros to increase/decrease indentation */
+#define INDENT indentno +=4
+#define UNINDENT indentno -=4
+
+/* printSpaces indents by printing spaces */
+static void printSpaces(void)
+{ 
+	FILE * listing = stdout;
+
+	int i;
+  	for (i=0;i<indentno;i++)
+    	fprintf(listing," ");
+}
+
+void printTree(struct TreeNode * tree)
+{ 
+	FILE * listing = stdout;
+	int i;
+	INDENT;
+
+	while (tree != NULL) 
+	{
+		printSpaces();
+
+		if (tree->nodeKind == StmtKind)
+		{ 
+			switch (tree->kind.stmt) 
+			{
+			    case IfK:
+			      fprintf(listing,"If\n");
+			      break;
+			    case ReturnK:
+			      fprintf(listing,"Return\n");
+			      break;
+			    case WhileK:
+			      fprintf(listing,"While");
+			      break;
+			    case CmpdK:
+			      fprintf(listing,"Compound\n");
+			      break;
+			    case AssignK:
+			      fprintf(listing,"Assign operation: ");
+			      printToken(tree->op, "\0");
+			      break;
+			    case CallK:
+			    	fprintf(listing, "%s()\n", tree->name);
+			    default:
+			      fprintf(listing,"Unknown ExpNode kind\n");
+			      break;
+			  }
+		}
+		else if (tree->nodeKind == ExpKind)
+		{ 
+			switch (tree->kind.exp) 
+			{
+			    case OpK:
+			      fprintf(listing,"Op: ");
+			      printToken(tree->op,"\0");
+			      break;
+			    case ConstK:
+			      fprintf(listing,"Const: %d\n",tree->val);
+			      break;
+			    case IdK:
+			      fprintf(listing,"Id: %s\n",tree->name);
+			      break;
+			    default:
+			      fprintf(listing,"Unknown ExpNode kind\n");
+			      break;
+		  	}
+		}
+		else if(tree->nodeKind == DeclKind)
+		{
+			switch(tree->kind.dec)
+			{
+				case VarK:
+					if(tree->etype == Array)
+					{
+						fprintf(listing, "int %s[%d]\n", tree->name, tree->val);
+					}
+					else
+					{
+						fprintf(listing, "Var: ");
+						printTypeSpec(tree->etype);
+						fprintf(listing, "%s\n", tree->name);
+					}
+					break;
+				case FunK:
+					printTypeSpec(tree->etype);
+					fprintf(listing, "Function: %s()\n",tree->name);
+					break;
+				case ParamK:
+					printTypeSpec(tree->etype);
+					fprintf(listing, "Params: %s\n", tree->name);
+					break;
+			}
+		}
+		else 
+		{
+			fprintf(listing,"Unknown node kind\n");
+		}
+
+		for (i=0;i<MAXCHILDREN;i++)
+		{
+		    printTree(tree->child[i]);
+		}
+
+		tree = tree->sibling;
+	}
+	UNINDENT;
 }

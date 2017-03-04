@@ -43,16 +43,16 @@
    static int yylex(void)
     { return getToken(); }
   
-    main()
+   /* main()
     {
         yyin = fopen("test", "r");
         yyparse();
 
         return 0;
-    }
+    }*/
 
     struct TreeNode * parse(void) { 
-    yyin = fopen("test", "r");
+        yyin = fopen("test", "r");
         yyparse();
         return syntaxTree;
     }
@@ -111,12 +111,10 @@ var_decl        : type_spec ID SEMI /*check type in tree */
 
 type_spec       : INT 
                     { 
-                        $$.str = copyString(tokenString);
                         $$.type = Integer;
                     }
                 | VOID
                     { 
-                        $$.str = copyString(tokenString);
                         $$.type = Void;
                     }
                 ;
@@ -194,9 +192,7 @@ stmt_list       : stmt_list stmt
                 ;
 
 stmt            : expr_stmt
-                    {
-
-                    }
+                    { }
                 | compound_stmt
                     { $$.tnode = $1.tnode; }
                 | select_stmt
