@@ -18,7 +18,7 @@
     char idString[MAXTOKENLEN+1];
     char numString[MAXTOKENLEN+1];
 
-    int lineno = 0;
+    int lineno = 1;
 %}
 
 %x COMMENT
@@ -63,7 +63,8 @@ whitespace              [ \t]+
 {identifier}            { strcpy(idString, yytext); return ID;}
 {number}                { strcpy(numString, yytext); return NUM;}
 {whitespace}            { /* skip whitespace */ }
-.                       {printf("ERROR\n");}
+.                       { printf("Error Token: %s\n", tokenString); 
+                            panicMode(); }
 
 %%
 
@@ -112,4 +113,31 @@ void skipComments()
     }while(done != 1);
 
     printf("end comment\n");
+}
+
+void panicMode()
+{
+    fprintf(stderr, "Error at line %d from Token: %s. \n", lineno, yytext);
+    char c;
+    int done = 0;
+    do
+    {
+        c = input();
+
+        switch(c)
+        {
+            case EOF:
+                done = 1;
+                break;
+            case '\n':
+                lineno++;
+            case ';':
+                done = 1;
+                break;
+            default:
+                break;
+        }
+    }while(done != 1);
+
+    printf("Restarting tokenizing at line %d\n", lineno);
 }

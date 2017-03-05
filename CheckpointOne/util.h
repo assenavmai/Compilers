@@ -118,4 +118,13 @@ char * copyString(char  * str);
 
 #endif
 
-
+/**
+* void panicMode()
+* Used in: cm.l
+*
+* Ignores multiline errors in the code until it reaches a semicolan in the CMinus
+* 
+*
+* @return nothing
+**/
+void panicMode();

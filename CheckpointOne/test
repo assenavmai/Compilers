@@ -1,6 +1,8 @@
 int gcd (int u, int v, int x)
 {
-	int f;
+	int f; \
+	int e;
+
 	if( v == 0 )
 	{
 		x = 2;
