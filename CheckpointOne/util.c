@@ -237,9 +237,10 @@ void printTree(struct TreeNode * tree)
 			      printToken(tree->op, "\0");
 			      break;
 			    case CallK:
-			    	fprintf(listing, "%s()\n", tree->name);
+			    	fprintf(listing, "Call: %s()\n", tree->name);
+			    	break;
 			    default:
-			      fprintf(listing,"Unknown ExpNode kind %s %d\n", tree->name, tree->nodeKind);
+			      fprintf(listing,"Unknown StmtNode kind %s %d\n", tree->name, tree->op);
 			      break;
 			  }
 		}
@@ -288,6 +289,9 @@ void printTree(struct TreeNode * tree)
 					printTypeSpec(tree->etype);
 					fprintf(listing, "%s\n", tree->name);
 					break;
+				default:
+			      fprintf(listing,"Unknown DeclNode kind\n");
+			      break;
 			}
 		}
 		else 

@@ -1,7 +1,24 @@
-int x[10];
-int gcd (int u)
+int gcd (int u, int v, int x)
 {
 	int f;
-	if( v == 0 ) return u ;
-	else return gcd(v, u-u/v*v);
+	if( v == 0 )
+	{
+		x = 2;
+
+		if(x == 2)
+		{
+			if(t == 1)
+			{
+				s = 3;
+			}
+			else
+			{
+				v = 1;
+			}
+		}
+	}
+	else 
+	{
+		return gcd(v, u-u/v*v);
+	}
 }

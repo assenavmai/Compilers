@@ -66,6 +66,8 @@
 %token ERROR
 
 %nonassoc LT GT LTEQ GTEQ
+%nonassoc NO_ELSE
+%nonassoc ELSE
 %left PLUS MINUS
 %left MULT DIV
 
@@ -282,7 +284,7 @@ expr_stmt       : expr SEMI
                     {}
                 ;
 
-select_stmt     : IF LPAREN expr RPAREN stmt
+select_stmt     : IF LPAREN expr RPAREN stmt %prec NO_ELSE
                     {
                         $$.tnode = newStmtNode(IfK);
                         $$.tnode->child[0] = $3.tnode;
@@ -423,6 +425,7 @@ call            : ID {  savedName = copyString(idString);
                         savedLineNo = lineno; }
                     LPAREN args RPAREN
                     {
+                        printf("\t\tCALL %s\n", savedName);
                         $$.tnode = newStmtNode(CallK);
                         $$.tnode->name = savedName;
                         $$.tnode->child[0] = $4.tnode;
