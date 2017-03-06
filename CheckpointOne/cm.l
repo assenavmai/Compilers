@@ -62,8 +62,7 @@ whitespace              [ \t]+
 {identifier}            { strcpy(idString, yytext); return ID;}
 {number}                { strcpy(numString, yytext); return NUM;}
 {whitespace}            { /* skip whitespace */ }
-.                       { printf("Error Token: %s\n", tokenString); 
-                            panicMode(); }
+.                       { panicMode(); }
 
 %%
 
@@ -73,11 +72,6 @@ int getToken(void)
 
     currentToken = yylex();
     strncpy(tokenString, yytext, MAXTOKENLEN);
-
-   // printf("LEX ");
-   // printToken(currentToken,tokenString);
-
-  //  printf("CUrrent %d %s\n", currentToken, tokenString);
 
     return currentToken;
 }
@@ -111,14 +105,15 @@ void skipComments()
         }
     }while(done != 1);
 
-    printf("end comment\n");
 }
 
 void panicMode()
 {
-    fprintf(stderr, "Error at line %d from Token: %s. \n", lineno, yytext);
     char c;
     int done = 0;
+    
+    fprintf(stderr, "Error at line %d from Token: %s. \n", lineno, yytext);
+
     do
     {
         c = input();

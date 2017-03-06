@@ -17,20 +17,14 @@ extern char tokenString[MAXTOKENLEN+1];
 extern char idString[MAXTOKENLEN+1];
 extern char numString[MAXTOKENLEN+1];
 
-
-
-
 /**
-* [FUNCTION PROTOTYPE]
-* Used in: [list files]
+* int getToken(void)
+* Used in: cm.l, cm.y
 *
-* [Line what the function does]
-* 
-* @param name: description
-* @param name: description
-* @param name: description
+* Gets the current token being processed
 *
-* @return
+* @return the current token
 **/
+int getToken(void);
 
 #endif
