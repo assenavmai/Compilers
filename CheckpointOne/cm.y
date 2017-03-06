@@ -42,17 +42,9 @@
 
    static int yylex(void)
     { return getToken(); }
-  
-   /* main()
-    {
-        yyin = fopen("test", "r");
-        yyparse();
-
-        return 0;
-    }*/
 
     struct TreeNode * parse(void) { 
-        yyin = fopen("test.cm", "r");
+
         yyparse();
         return syntaxTree;
     }
