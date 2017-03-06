@@ -1,3 +1,8 @@
+README FOR COMPILERS: CIS*4650
+---------------------------------
+Vanessa White, 0832498
+Jasmine Kandloosi, 0846091
+
 CONTENTS OF THIS FILE
 ----------------------
 
@@ -5,8 +10,8 @@ CONTENTS OF THIS FILE
 * Version Control
 * Requirements
 * Build & Run
-* Assumptions
-* Limitations
+* Testing
+
 
 INTRODUCTION
 -------------
@@ -19,7 +24,7 @@ VERSION CONTROL
 
 We used GitHub for version control.
 
-The program handed in for submission can be found at: http://github.com/assenavmai/Compilers/ in the [branch]
+The program handed in for submission can be found at: http://github.com/assenavmai/Compilers/ in the 'recovery' branch
 
 REQUIREMENTS
 -------------
@@ -34,15 +39,17 @@ BUILD & RUN
 ------------
 
     1) type 'make' to compile the program
-    2) type ./cm [filename].cm to compile a CMinus program
-    3)
+    2) type ./cm -a [filename].cm to compile a CMinus program and output it's contents into an '.abs' file
+    3) The abstract syntax tree can be printed out onto stdout if the STDOUT flag is changed within main.
 
-ASSUMPTIONS 
--------------
+TESTING
+----------
 
-	* An array will always be of type int.
+Test files are provided to run the program. These files include:
 
-LIMITATIONS
-------------
-	* No syntax tree
-	* 
+	* 1.cm: No errors in the file.
+	* 2.cm: 
+	* 3.cm:
+	* 4.cm: Tests random invalid characters within the file, 
+	* 5.cm:
+

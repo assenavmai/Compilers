@@ -107,7 +107,7 @@ var_decl        : type_spec ID {    savedName = copyString(idString);
                     SEMI 
                     { 
                         $$.tnode = newDeclNode(VarK);
-                        $$.tnode->name = savedName;
+                        $$.tnode->attr.name = savedName;
                         $$.tnode->etype = $1.type;
                         $$.tnode->pos = savedLineNo;
                     }
@@ -116,9 +116,9 @@ var_decl        : type_spec ID {    savedName = copyString(idString);
                     LBRAC NUM RBRAC SEMI
                     { 
                         $$.tnode = newDeclNode(VarK);
-                        $$.tnode->name = savedName;
+                        $$.tnode->attr.name = savedName;
                         $$.tnode->etype = Array;
-                        $$.tnode->val = atoi(numString);
+                        $$.tnode->attr.val = atoi(numString);
                         $$.tnode->pos = savedLineNo;
                     }
                 ;
@@ -135,7 +135,7 @@ fun_decl        : type_spec ID { savedName = copyString(idString);
                     {
                         $$.tnode = newDeclNode(FunK);
 
-                        $$.tnode->name = savedName;
+                        $$.tnode->attr.name = savedName;
                         $$.tnode->etype = $1.type;
                         $$.tnode->pos = savedLineNo;
                         $$.tnode->child[0] = $5.tnode;
@@ -178,7 +178,7 @@ param           : type_spec ID
                     {
                         $$.tnode = newDeclNode(ParamK);
                         $$.tnode->pos = lineno;
-                        $$.tnode->name = copyString(idString);
+                        $$.tnode->attr.name = copyString(idString);
                         $$.tnode->etype = $1.type;
                     }
                 | type_spec ID {    savedName = copyString(idString);
@@ -187,7 +187,7 @@ param           : type_spec ID
                     {
                         $$.tnode = newDeclNode(ParamK);
                         $$.tnode->pos = savedLineNo;
-                        $$.tnode->name = savedName;
+                        $$.tnode->attr.name = savedName;
                         $$.tnode->etype = Array;
                     }
                 ;
@@ -304,7 +304,7 @@ expr            : var EQ expr
                     {
                         $$.tnode = newStmtNode(AssignK);
                         $$.tnode->child[0] = $1.tnode;
-                        $$.tnode->op = EQ;
+                        $$.tnode->attr.op = EQ;
                         $$.tnode->child[1] = $3.tnode;
                     }
                 | simple_expr
@@ -315,14 +315,14 @@ var             : ID
                     { 
                         /* check if undeclared */
                         $$.tnode = newExpNode(IdK);
-                        $$.tnode->name = copyString(idString);
+                        $$.tnode->attr.name = copyString(idString);
                     }
                 | ID {  savedName = copyString(idString);
                         savedLineNo = lineno; }
                     LBRAC expr RBRAC
                     {
                         $$.tnode = newExpNode(IdK);
-                        $$.tnode->name = savedName;
+                        $$.tnode->attr.name = savedName;
                         $$.tnode->pos = savedLineNo;
                         $$.tnode->child[0] = $4.tnode;
                     }
@@ -332,7 +332,7 @@ simple_expr     : additive_expr relop additive_expr
                     {
                         $$.tnode = newExpNode(OpK);
                         $$.tnode->child[0] = $1.tnode;
-                        $$.tnode->op = $2.op;
+                        $$.tnode->attr.op = $2.op;
                         $$.tnode->child[1] = $3.tnode;
                     }
                 | additive_expr
@@ -357,7 +357,7 @@ additive_expr   : additive_expr addop term
                     {
                         $$.tnode = newExpNode(OpK);
                         $$.tnode->child[0] = $1.tnode;
-                        $$.tnode->op = $2.op;
+                        $$.tnode->attr.op = $2.op;
                         $$.tnode->child[1] = $3.tnode;
                     }
                 | term
@@ -374,7 +374,7 @@ term            : term mulop factor
                     { 
                         $$.tnode = newExpNode(OpK);
                         $$.tnode->child[0] = $1.tnode;
-                        $$.tnode->op = $2.op;
+                        $$.tnode->attr.op = $2.op;
                         $$.tnode->child[1] = $3.tnode;
                     }
                 | factor
@@ -398,7 +398,7 @@ factor          : LPAREN expr RPAREN
                 | NUM
                     {
                         $$.tnode = newExpNode(ConstK);
-                        $$.tnode->val = atoi(numString);
+                        $$.tnode->attr.val = atoi(numString);
                     }
                 ;
 
@@ -407,7 +407,7 @@ call            : ID {  savedName = copyString(idString);
                     LPAREN args RPAREN
                     {
                         $$.tnode = newStmtNode(CallK);
-                        $$.tnode->name = savedName;
+                        $$.tnode->attr.name = savedName;
                         $$.tnode->child[0] = $4.tnode;
                         $$.tnode->pos = savedLineNo;
                     }

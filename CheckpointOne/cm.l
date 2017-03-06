@@ -12,8 +12,6 @@
     #include "scan.h"
     #include "util.h"
 
-   // void yyerror(char *);
-
     char tokenString[MAXTOKENLEN+1];
     char idString[MAXTOKENLEN+1];
     char numString[MAXTOKENLEN+1];
@@ -61,7 +59,7 @@ whitespace              [ \t]+
 {identifier}            { strcpy(idString, yytext); return ID;}
 {number}                { strcpy(numString, yytext); return NUM;}
 {whitespace}            { /* skip whitespace */ }
-.                       {printf("ERROR\n");}
+.                       {}
 
 %%
 
@@ -113,5 +111,4 @@ void skipComments()
         }
     }while(done != 1);
 
-    printf("end comment\n");
 }

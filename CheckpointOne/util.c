@@ -222,13 +222,13 @@ void printTree(struct TreeNode * tree)
 			      break;
 			    case AssignK:
 			      fprintf(listing,"Assign operation: ");
-			      printToken(tree->op, "\0");
+			      printToken(tree->attr.op, "\0");
 			      break;
 			    case CallK:
-			    	fprintf(listing, "Call: %s()\n", tree->name);
+			    	fprintf(listing, "Call: %s()\n", tree->attr.name);
 			    	break;
 			    default:
-			      fprintf(listing,"Unknown StmtNode kind %s %d\n", tree->name, tree->op);
+			      fprintf(listing,"Unknown StmtNode kind %s %d\n", tree->attr.name, tree->attr.op);
 			      break;
 			  }
 		}
@@ -238,13 +238,13 @@ void printTree(struct TreeNode * tree)
 			{
 			    case OpK:
 			      fprintf(listing,"Op: ");
-			      printToken(tree->op,"\0");
+			      printToken(tree->attr.op,"\0");
 			      break;
 			    case ConstK:
-			      fprintf(listing,"Const: %d\n",tree->val);
+			      fprintf(listing,"Const: %d\n",tree->attr.val);
 			      break;
 			    case IdK:
-			      fprintf(listing,"Id: %s\n",tree->name);
+			      fprintf(listing,"Id: %s\n",tree->attr.name);
 			      break;
 			    default:
 			      fprintf(listing,"Unknown ExpNode kind\n");
@@ -258,24 +258,24 @@ void printTree(struct TreeNode * tree)
 				case VarK:
 					if(tree->etype == Array)
 					{
-						fprintf(listing, "int %s[%d]\n", tree->name, tree->val);
+						fprintf(listing, "int %s[%d]\n", tree->attr.name, tree->attr.val);
 					}
 					else
 					{
 						fprintf(listing, "Var: ");
 						printTypeSpec(tree->etype);
-						fprintf(listing, "%s\n", tree->name);
+						fprintf(listing, "%s\n", tree->attr.name);
 					}
 					break;
 				case FunK:
 					fprintf(listing, "Function: ");
 					printTypeSpec(tree->etype);
-					fprintf(listing, "%s()\n",tree->name);
+					fprintf(listing, "%s()\n",tree->attr.name);
 					break;
 				case ParamK:
 					fprintf(listing, "Params: ");
 					printTypeSpec(tree->etype);
-					fprintf(listing, "%s\n", tree->name);
+					fprintf(listing, "%s\n", tree->attr.name);
 					break;
 				default:
 			      fprintf(listing,"Unknown DeclNode kind\n");

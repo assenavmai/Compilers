@@ -44,9 +44,9 @@ struct TreeNode {
 	struct TreeNode * sibling;
 
 	int pos;
-	int op;
+/*	int op;
 	int val;
-	char * name;
+	char * name;*/
 	
 	enum NodeKind nodeKind;
 	enum ExpType etype;
@@ -57,11 +57,11 @@ struct TreeNode {
 	//	enum TypeSpec ts;
 	}kind;
 
-	/*union {
+	union {
 		int op;
 		int val;
 		char * name;
-	}attr;*/
+	}attr;
 
 	// enum TypeSpec type; 
 

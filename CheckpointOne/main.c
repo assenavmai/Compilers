@@ -61,7 +61,7 @@ int main(int argc, char const *argv[])
 	outFile[j++] = '\0';
 
 
-	if(strcmp(argv[1], "-a") == 0)
+	if(strcmp(argv[1], "-a") == 0) // print the abstract syntax tree to the file
 	{
 		strcat(outFile, ".abs");
 
