@@ -10,21 +10,6 @@
 #define _PARSE_H_
 
 /**
-* [FUNCTION PROTOTYPE]
-* Used in: [list files]
-*
-* [Line what the function does]
-* 
-* @param name: description
-* @param name: description
-* @param name: description
-*
-* @return
-**/
-/* returns the newly constructed syntax tree
- */
-
-/**
 * struct TreeNode * parse(void)
 * Used in: cm.y, main.c
 *

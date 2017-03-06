@@ -86,10 +86,8 @@ decl_list       : decl_list decl
                         }
                         else
                         {
-                            printf("decl no");
                             $$.tnode = $2.tnode;
                         }
-                        printf("decl list\n");
                     }
 
                 | decl
@@ -121,7 +119,6 @@ var_decl        : type_spec ID {    savedName = copyString(idString);
                         $$.tnode->val = atoi(numString);
                         $$.tnode->pos = savedLineNo;
                     }
-                | error SEMI {fprintf(stderr, "Error semi...\n");}
                 ;
 
 type_spec       : INT 
@@ -142,14 +139,12 @@ fun_decl        : type_spec ID { savedName = copyString(idString);
                         $$.tnode->child[0] = $5.tnode;
                         $$.tnode->child[1] = $7.tnode;
                     }
-                    | error RPAREN {fprintf(stderr, "fun_decl...error");}   
                 ;
 
 params          : param_list
                     { $$.tnode = $1.tnode; } 
                 | VOID
                     {}
-                | VOID error {fprintf(stderr, "void error\n");}
                 ;
 
 param_list      : param_list COMMA param
@@ -172,15 +167,12 @@ param_list      : param_list COMMA param
                         }
                         else
                         {
-                            printf("param no");
                             $$.tnode = $3.tnode;
                         }
 
-                        printf("ys\n");
                     }
                 | param
                     { $$.tnode = $1.tnode; }
-                | error COMMA { fprintf(stderr, "param_list..error");}
                 ;
 
 param           : type_spec ID 
@@ -207,7 +199,6 @@ compound_stmt   : LCURL local_decl stmt_list RCURL
                         $$.tnode->child[0] = $2.tnode;
                         $$.tnode->child[1] = $3.tnode;
                     }
-                | error RCURL {fprintf(stderr, "compound_stmt..error");}
                 ;
 
 local_decl      : local_decl var_decl
@@ -228,10 +219,8 @@ local_decl      : local_decl var_decl
                         }
                         else
                         {
-                            printf("local no");
                             $$.tnode = $2.tnode;
                         }
-                        printf("local\n");
                     }
                 | epsilon { $$.tnode = NULL; }
                 ;
@@ -253,10 +242,8 @@ stmt_list       : stmt_list stmt
                         }
                         else
                         {
-                            printf("stmt no");
                             $$.tnode = $2.tnode;
                         }
-                        printf("stmt list\n");
                     }
                 | epsilon { $$.tnode = NULL; }
                 ;
@@ -420,7 +407,6 @@ call            : ID {  savedName = copyString(idString);
                         savedLineNo = lineno; }
                     LPAREN args RPAREN
                     {
-                        printf("\t\tCALL %s\n", savedName);
                         $$.tnode = newStmtNode(CallK);
                         $$.tnode->name = savedName;
                         $$.tnode->child[0] = $4.tnode;
@@ -450,10 +436,8 @@ arg_list        : arg_list COMMA expr
                         }
                         else
                         {
-                            printf("arg list no");
                             $$.tnode = $3.tnode;
                         }
-                        printf("arg list\n");
                     }
                 | expr
                     { $$.tnode = $1.tnode; }

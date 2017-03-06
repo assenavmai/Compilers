@@ -295,3 +295,26 @@ void printTree(struct TreeNode * tree)
 	}
 	UNINDENT;
 }
+
+void abstractSyntaxTree() {
+
+	struct TreeNode * tree;
+
+	tree = parse();
+	printTree(tree);
+
+}
+
+FILE * openSourceFile(char * filename) {
+
+	FILE * temp;
+	temp = fopen(filename, "w");
+
+	if (!temp)
+	{ 
+		fprintf(stderr,"File %s not found\n", filename);
+		exit(1);
+	}
+
+	return temp;
+}

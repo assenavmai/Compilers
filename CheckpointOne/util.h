@@ -8,18 +8,7 @@
 #ifndef _UTIL_H_
 #define _UTIL_H_
 
-/**
-* [FUNCTION PROTOTYPE]
-* Used in: [list files]
-*
-* [Line what the function does]
-* 
-* @param name: description
-* @param name: description
-* @param name: description
-*
-* @return
-**/
+#include "parse.h"
 
 /**
 * void printToken( int token, const char* tokenString )
@@ -125,6 +114,28 @@ char * copyString(char  * str);
 * Ignores multiline errors in the code until it reaches a semicolan in the CMinus
 * 
 *
-* @return nothing
+* @return none
 **/
 void panicMode();
+
+/**
+* FILE * openSourceFile(char * filename)
+* Used in: main.c
+*
+* Opens the file to print the output to
+* 
+* @param filename: file to write to
+*
+* @return file pointer opening the file on success
+**/
+FILE * openSourceFile(char * filename);
+
+/**
+* void abstractSyntaxTree()
+* Used in: main.c
+*
+* Outputs the abstract syntax tree -- function for '-a' fla
+*
+* @return none
+**/
+void abstractSyntaxTree();

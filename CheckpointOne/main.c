@@ -17,29 +17,6 @@ FILE * listing;
 FILE * code;
 
 
-void abstractSyntaxTree() {
-
-	struct TreeNode * tree;
-
-	tree = parse();
-	printTree(tree);
-
-}
-
-FILE * openSourceFile(char * filename) {
-
-	FILE * temp;
-	temp = fopen(filename, "w");
-
-	if (!temp)
-	{ 
-		fprintf(stderr,"File %s not found\n", filename);
-		exit(1);
-	}
-
-	return temp;
-}
-
 int main(int argc, char const *argv[])
 {
 	char srcName[120];
@@ -50,14 +27,13 @@ int main(int argc, char const *argv[])
 		exit(1);
 	}
 
-	strcpy(srcName, argv[2]);
+	strcpy(srcName, argv[2]); /* get the file name without the extension */
 
 	if(!strchr (srcName, '.'))
 	{
-		if(strcmp(argv[1], "-a") == 0)
+		if(strcmp(argv[1], "-a") == 0) /* output abstract syntax tree to the file */
 		{
 			strcat(srcName,".abs");
-			printf("sjsjss %s\n", srcName);
 			source = openSourceFile(srcName); 
 			listing = source;
 			abstractSyntaxTree();

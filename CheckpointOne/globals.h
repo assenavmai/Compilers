@@ -48,12 +48,11 @@ struct TreeNode {
 	int val;
 	char * name;
 	enum NodeKind nodeKind;
-	enum ExpType etype;
+
 	union {
 		enum StmtKind stmt;
 		enum ExpKind exp;
 		enum DeclKind dec;
-	//	enum TypeSpec ts;
 	}kind;
 
 	/*union {
@@ -62,8 +61,8 @@ struct TreeNode {
 		char * name;
 	}attr;*/
 
-	// enum TypeSpec type; 
-
+	enum ExpType etype; /* get the type specifier for the variable */
+	
 };
 
 
