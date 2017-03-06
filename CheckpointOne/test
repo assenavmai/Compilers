@@ -1,26 +1,34 @@
-int gcd (int u, int v, int x)
+/*****************************
+* File: 4.cm
+* Errors in file:
+	* incorrect return statement (line 27)
+	* incorrect if statment (line 15)
+	* incorrect call statement (line 33)
+
+* Compiler is testing against these errors:
+	* syntactic error for return statement
+	* syntactic error for if statement
+	* syntactic error for call
+*******************************/
+int gcd (int u, int v)
 {
-	int f; \
-	int e;
+	if ( == 0) return u;
 
-	if( v == 0 )
-	{
-		x = 2;
+	else return gcd(v, u-u/v*v);
+	/*u-u/v*v = = u mod v */
 
-		if(x == 2)
-		{
-			if(t == 1)
-			{
-				s = 3;
-			}
-			else
-			{
-				v = 1;
-			}
-		}
-	}
-	else 
-	{
-		return gcd(v, u-u/v*v);
-	}
+}
+
+int addthree (int a, int b, int c)
+{
+	int result;
+
+	result = a + b + c;
+	return r3sult;
+}
+
+void main (void)
+{
+	output(gcd(4,5));
+	output(addthree(1,2,));
 }

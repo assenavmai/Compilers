@@ -116,8 +116,6 @@ void printTree( struct TreeNode * tree );
 **/
 char * copyString(char  * str);
 
-#endif
-
 /**
 * void panicMode()
 * Used in: cm.l
@@ -128,3 +126,4 @@ char * copyString(char  * str);
 * @return nothing
 **/
 void panicMode();
+#endif

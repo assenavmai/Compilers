@@ -12,8 +12,6 @@
     #include "scan.h"
     #include "util.h"
 
-    void yyerror(char *);
-
     char tokenString[MAXTOKENLEN+1];
     char idString[MAXTOKENLEN+1];
     char numString[MAXTOKENLEN+1];
@@ -112,7 +110,7 @@ void skipComments()
         }
     }while(done != 1);
 
-    printf("end comment\n");
+    //printf("end comment\n");
 }
 
 void panicMode()

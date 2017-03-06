@@ -190,7 +190,7 @@ void printToken(int token, const char* tokenString)
 
 
 // used by printTree to store current number of spaces to indent
-static indentno = 0;
+static int indentno = 0;
 
 /* macros to increase/decrease indentation */
 #define INDENT indentno +=4

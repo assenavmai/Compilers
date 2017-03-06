@@ -30,9 +30,9 @@
     }tokenTypes;
 
 
-    void yyerror(const char *str)
+    void yyerror(char *str)
     {
-            fprintf(stderr,"error: %s %d %s\n",str, lineno, tokenString);
+            fprintf(stderr,"Line #%d: %s\t",lineno, str);
     }
 
     int yywrap()
@@ -42,14 +42,6 @@
 
    static int yylex(void)
     { return getToken(); }
-  
-   /* main()
-    {
-        yyin = fopen("test", "r");
-        yyparse();
-
-        return 0;
-    }*/
 
     struct TreeNode * parse(void) { 
         yyin = fopen("test", "r");
@@ -96,10 +88,8 @@ decl_list       : decl_list decl
                         }
                         else
                         {
-                            printf("decl no");
                             $$.tnode = $2.tnode;
                         }
-                        printf("decl list\n");
                     }
 
                 | decl
@@ -110,6 +100,7 @@ decl            : var_decl
                     { $$.tnode = $1.tnode; }
                 | fun_decl 
                     { $$.tnode = $1.tnode; }
+                | error { fprintf(stderr, "Error in declaration\n");}
                 ;
 
 var_decl        : type_spec ID {    savedName = copyString(idString); 
@@ -150,7 +141,8 @@ fun_decl        : type_spec ID { savedName = copyString(idString);
                         $$.tnode->pos = savedLineNo;
                         $$.tnode->child[0] = $5.tnode;
                         $$.tnode->child[1] = $7.tnode;
-                    }   
+                    }
+                | LPAREN error RPAREN compound_stmt { fprintf(stderr, "Error in function declaration statement\n"); }
                 ;
 
 params          : param_list
@@ -169,24 +161,20 @@ param_list      : param_list COMMA param
                         {
                             while(temp->sibling)
                             {
-                                printf("sib %s\n", temp->name);
 
                                 temp = temp->sibling;
-                                printf("sib %s\n", temp->name);
                             }
                             temp->sibling = $3.tnode;
                             $$.tnode = $1.tnode;
                         }
                         else
                         {
-                            printf("param no");
                             $$.tnode = $3.tnode;
                         }
-
-                        printf("ys\n");
                     }
                 | param
                     { $$.tnode = $1.tnode; }
+                | error { fprintf(stderr, "Error in declaration (parameter list) statement\n");}
                 ;
 
 param           : type_spec ID 
@@ -205,6 +193,7 @@ param           : type_spec ID
                         $$.tnode->name = savedName;
                         $$.tnode->etype = Array;
                     }
+                /*| error { yyerrok; fprintf(stderr, "Error in declaration (parameter) statement\n"); }*/
                 ;
 
 compound_stmt   : LCURL local_decl stmt_list RCURL
@@ -213,6 +202,7 @@ compound_stmt   : LCURL local_decl stmt_list RCURL
                         $$.tnode->child[0] = $2.tnode;
                         $$.tnode->child[1] = $3.tnode;
                     }
+                | LCURL error RCURL { yyerrok; fprintf(stderr, "Error in compound statement\n"); }
                 ;
 
 local_decl      : local_decl var_decl
@@ -233,10 +223,8 @@ local_decl      : local_decl var_decl
                         }
                         else
                         {
-                            printf("local no");
                             $$.tnode = $2.tnode;
                         }
-                        printf("local\n");
                     }
                 | epsilon { $$.tnode = NULL; }
                 ;
@@ -258,10 +246,8 @@ stmt_list       : stmt_list stmt
                         }
                         else
                         {
-                            printf("stmt no");
                             $$.tnode = $2.tnode;
                         }
-                        printf("stmt list\n");
                     }
                 | epsilon { $$.tnode = NULL; }
                 ;
@@ -297,6 +283,7 @@ select_stmt     : IF LPAREN expr RPAREN stmt %prec NO_ELSE
                         $$.tnode->child[1] = $5.tnode;
                         $$.tnode->child[2] = $7.tnode;
                     }
+                | IF LPAREN error RPAREN { yyerrok; fprintf(stderr, "Error in selection (if) statement\n"); }
                 ;
 
 iter_stmt       : WHILE LPAREN expr RPAREN stmt
@@ -305,6 +292,7 @@ iter_stmt       : WHILE LPAREN expr RPAREN stmt
                         $$.tnode->child[0] = $3.tnode;
                         $$.tnode->child[1] = $5.tnode;
                     }
+                | WHILE LPAREN error RPAREN { yyerrok; fprintf(stderr, "Error in iteration (while) statement\n"); }
                 ;
 
 return_stmt     : RETURN SEMI
@@ -317,6 +305,7 @@ return_stmt     : RETURN SEMI
                         $$.tnode = newStmtNode(ReturnK);
                         $$.tnode->child[0] = $2.tnode;
                     }
+                | RETURN error SEMI { yyerrok; fprintf(stderr, "Error in return statement\n"); }
                 ;
 
 expr            : var EQ expr
@@ -425,7 +414,6 @@ call            : ID {  savedName = copyString(idString);
                         savedLineNo = lineno; }
                     LPAREN args RPAREN
                     {
-                        printf("\t\tCALL %s\n", savedName);
                         $$.tnode = newStmtNode(CallK);
                         $$.tnode->name = savedName;
                         $$.tnode->child[0] = $4.tnode;
@@ -455,15 +443,14 @@ arg_list        : arg_list COMMA expr
                         }
                         else
                         {
-                            printf("arg list no");
                             $$.tnode = $3.tnode;
                         }
-                        printf("arg list\n");
                     }
                 | expr
                     { $$.tnode = $1.tnode; }
+                /*| error COMMA expr {fprintf(stderr, "Error in argument list\n");}*/
                 ;
 
-epsilon         : ;                         
+epsilon         : ;                   
 %%
 
