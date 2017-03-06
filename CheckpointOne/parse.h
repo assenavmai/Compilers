@@ -21,5 +21,17 @@
 *
 * @return
 **/
+/* returns the newly constructed syntax tree
+ */
+
+/**
+* struct TreeNode * parse(void)
+* Used in: cm.y, main.c
+*
+* Returns the newly constructed syntax tree
+*
+* @return the syntax tree created
+**/
+struct TreeNode * parse(void);
 
 #endif

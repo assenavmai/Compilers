@@ -9,6 +9,17 @@
 #ifndef _SCAN_H_
 #define _SCAN_H_
 
+/* MAXTOKENLEN is the maximum size of a token */
+#define MAXTOKENLEN 40
+
+/* tokenString array stores the lexeme of each token */
+extern char tokenString[MAXTOKENLEN+1];
+extern char idString[MAXTOKENLEN+1];
+extern char numString[MAXTOKENLEN+1];
+
+
+
+
 /**
 * [FUNCTION PROTOTYPE]
 * Used in: [list files]
