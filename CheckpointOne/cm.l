@@ -12,8 +12,6 @@
     #include "scan.h"
     #include "util.h"
 
-    void yyerror(char *);
-
     char tokenString[MAXTOKENLEN+1];
     char idString[MAXTOKENLEN+1];
     char numString[MAXTOKENLEN+1];
@@ -68,10 +66,26 @@ whitespace              [ \t]+
 
 int getToken(void)
 { 
+    static int firstTime = TRUE;
     int currentToken;
+
+    if (firstTime)
+    { 
+        printf("i get high\n");
+        firstTime = FALSE;
+        lineno++;
+        yyin = source;
+        yyout = listing;
+    }
 
     currentToken = yylex();
     strncpy(tokenString, yytext, MAXTOKENLEN);
+
+    if (TraceScan) 
+    {
+        fprintf(listing,"\t%d: ",lineno);
+        printToken(currentToken,tokenString);
+    }
 
     return currentToken;
 }

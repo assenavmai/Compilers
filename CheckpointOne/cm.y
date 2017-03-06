@@ -43,7 +43,7 @@
     { return getToken(); }
 
     struct TreeNode * parse(void) { 
-        yyin = fopen("test", "r");
+        yyin = fopen("test.cm", "r");
         yyparse();
         return syntaxTree;
     }
