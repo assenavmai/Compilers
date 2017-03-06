@@ -11,15 +11,9 @@ CONTENTS OF THIS FILE
 INTRODUCTION
 -------------
 
-This projects is checkpoint 1 of 3 for our fourth year compilers class, CIS*4650. For this checkpoint, we have to create a scanner and parser to the CMinus specification. After building these two components, a syntax tree is built and sent to stdout.
-
 
 VERSION CONTROL
 ----------------
-
-We used GitHub for version control.
-
-The program handed in for submission can be found at: http://github.com/assenavmai/Compilers/ in the [branch]
 
 REQUIREMENTS
 -------------
@@ -33,14 +27,12 @@ This program requires:
 BUILD & RUN
 ------------
 
-    1) type 'make' to compile the program
-    2) type ./cm [filename].cm to compile a CMinus program
+    1)
+    2)
     3)
 
 ASSUMPTIONS 
 -------------
-
-	* 
 
 LIMITATIONS
 ------------
