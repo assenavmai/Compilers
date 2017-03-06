@@ -47,6 +47,7 @@ struct TreeNode {
 	int op;
 	int val;
 	char * name;
+	
 	enum NodeKind nodeKind;
 	enum ExpType etype;
 	union {
@@ -65,6 +66,32 @@ struct TreeNode {
 	// enum TypeSpec type; 
 
 };
+
+/**************************************************/
+/***********   Flags for tracing       ************/
+/**************************************************/
+
+/* TraceScan = TRUE causes token information to be
+ * printed to the listing file as each token is
+ * recognized by the scanner
+ */
+extern int TraceScan;
+
+/* TraceParse = TRUE causes the syntax tree to be
+ * printed to the listing file in linearized form
+ * (using indents for children)
+ */
+extern int TraceParse;
+
+/* TraceAnalyze = TRUE causes symbol table inserts
+ * and lookups to be reported to the listing file
+ */
+extern int TraceAnalyze;
+
+/* TraceCode = TRUE causes comments to be written
+ * to the TM code file as code is generated
+ */
+extern int TraceCode;
 
 
 #endif

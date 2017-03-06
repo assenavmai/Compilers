@@ -4,6 +4,7 @@
 * Authors: Jasmine Kandloosi and Vanessa White
 * February 2017
 *************************************************/
+#define STDOUT FALSE
 
 #include "globals.h"
 #include "util.h"
@@ -71,18 +72,22 @@ int main(int argc, char const *argv[])
 			fprintf(stderr, "Error: File %s not found\n", sourceFilename);
 			exit(1);
 		}
-
-		listing = fopen(outFile, "w");	// file with abstract syntax tree
-
-		if(!listing)
-		{
-			fprintf(stderr, "Error: File %s not found\n", listing);
-			exit(1);
-		}
 		
+		#if STDOUT
+			listing = stdout;
+
+		#else
+		    listing = fopen(outFile, "w");	// file with abstract syntax tree
+			if(!listing)
+			{
+				fprintf(stderr, "Error: File %s not found\n", outFile);
+				exit(1);
+			}
+		#endif
+
 		tree = parse();
-	    fprintf(stdout,"\nSyntax tree:\n");
-	    printTree(tree);
+		fprintf(listing,"\nSyntax tree:\n");
+		printTree(tree);
 	}
 	
 	return 0;
