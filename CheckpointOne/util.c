@@ -12,8 +12,6 @@
 
 struct TreeNode * newDeclNode(enum DeclKind dec) {
 
-	FILE * listing = stdout; 
-
 	struct TreeNode * node = (struct TreeNode *)malloc(sizeof(struct TreeNode));
 
 	int i;
@@ -42,8 +40,6 @@ struct TreeNode * newDeclNode(enum DeclKind dec) {
 
 struct TreeNode * newExpNode(enum ExpKind exp) {
 
-	FILE * listing = stdout; 
-
 	struct TreeNode * node = (struct TreeNode *)malloc(sizeof(struct TreeNode));
 
 	int i;
@@ -69,8 +65,6 @@ struct TreeNode * newExpNode(enum ExpKind exp) {
 }
 
 struct TreeNode * newStmtNode(enum StmtKind stmt) {
-
-	FILE * listing = stdout; 
 
 	struct TreeNode * node = (struct TreeNode *)malloc(sizeof(struct TreeNode));
 
@@ -100,7 +94,6 @@ struct TreeNode * newStmtNode(enum StmtKind stmt) {
 char * copyString(char  * str) {
 
 	char * newString;
-	FILE * listing = stdout;
 
 	if(!str)
 	{
@@ -123,8 +116,6 @@ char * copyString(char  * str) {
 
 void printTypeSpec(enum ExpType type)
 {
-	FILE * listing = stdout;
-
 	switch(type)
 	{
 		case Void:
@@ -138,7 +129,6 @@ void printTypeSpec(enum ExpType type)
 
 void printToken(int token, const char* tokenString)
 { 
-	FILE * listing = stdout;
 	switch (token)
   	{ 
 	  	case IF:
@@ -199,8 +189,6 @@ static indentno = 0;
 /* printSpaces indents by printing spaces */
 static void printSpaces(void)
 { 
-	FILE * listing = stdout;
-
 	int i;
   	for (i=0;i<indentno;i++)
     	fprintf(listing," ");
@@ -208,7 +196,6 @@ static void printSpaces(void)
 
 void printTree(struct TreeNode * tree)
 { 
-	FILE * listing = stdout;
 	int i;
 	INDENT;
 

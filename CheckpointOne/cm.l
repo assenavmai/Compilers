@@ -18,7 +18,6 @@
     char idString[MAXTOKENLEN+1];
     char numString[MAXTOKENLEN+1];
 
-    int lineno = 1;
 %}
 
 %x COMMENT

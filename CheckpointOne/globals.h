@@ -25,6 +25,9 @@
 #include <string.h>
 
 
+extern FILE* source; /* source code text file */
+extern FILE* listing; /* listing output text file */
+extern FILE* code; /* code text file for TM simulator */
 extern int lineno; /* source line number for listing */
 
 /* The type of statements for the CMinus language */

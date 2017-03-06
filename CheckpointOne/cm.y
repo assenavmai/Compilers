@@ -25,7 +25,6 @@
     {
         struct TreeNode * tnode;
         enum ExpType type;
-        char * str;
         int op;
     }tokenTypes;
 
@@ -42,21 +41,12 @@
 
    static int yylex(void)
     { return getToken(); }
-  
-   /* main()
-    {
-        yyin = fopen("test", "r");
-        yyparse();
-
-        return 0;
-    }*/
 
     struct TreeNode * parse(void) { 
         yyin = fopen("test", "r");
         yyparse();
         return syntaxTree;
     }
-
 
 %}
 
@@ -131,6 +121,7 @@ var_decl        : type_spec ID {    savedName = copyString(idString);
                         $$.tnode->val = atoi(numString);
                         $$.tnode->pos = savedLineNo;
                     }
+                | error SEMI {fprintf(stderr, "Error semi...\n");}
                 ;
 
 type_spec       : INT 
@@ -150,13 +141,15 @@ fun_decl        : type_spec ID { savedName = copyString(idString);
                         $$.tnode->pos = savedLineNo;
                         $$.tnode->child[0] = $5.tnode;
                         $$.tnode->child[1] = $7.tnode;
-                    }   
+                    }
+                    | error RPAREN {fprintf(stderr, "fun_decl...error");}   
                 ;
 
 params          : param_list
                     { $$.tnode = $1.tnode; } 
                 | VOID
                     {}
+                | VOID error {fprintf(stderr, "void error\n");}
                 ;
 
 param_list      : param_list COMMA param
@@ -187,6 +180,7 @@ param_list      : param_list COMMA param
                     }
                 | param
                     { $$.tnode = $1.tnode; }
+                | error COMMA { fprintf(stderr, "param_list..error");}
                 ;
 
 param           : type_spec ID 
@@ -213,6 +207,7 @@ compound_stmt   : LCURL local_decl stmt_list RCURL
                         $$.tnode->child[0] = $2.tnode;
                         $$.tnode->child[1] = $3.tnode;
                     }
+                | error RCURL {fprintf(stderr, "compound_stmt..error");}
                 ;
 
 local_decl      : local_decl var_decl
