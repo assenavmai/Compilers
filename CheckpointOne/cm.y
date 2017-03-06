@@ -52,7 +52,7 @@
     }*/
 
     struct TreeNode * parse(void) { 
-        yyin = fopen("test", "r");
+        yyin = fopen("test.cm", "r");
         yyparse();
         return syntaxTree;
     }
@@ -83,23 +83,21 @@ program         : decl_list
 decl_list       : decl_list decl
                     {
                         struct TreeNode * temp;
-                        temp = $1.tnode;
+                        temp = $1.tnode; 
 
                         if(temp)
                         {
-                            while(temp->sibling)
+                            while(temp->sibling) // find the node without a sibling
                             {
                                 temp = temp->sibling;
                             }
-                            temp->sibling = $2.tnode;
+                            temp->sibling = $2.tnode; // make the sibling the 
                             $$.tnode = $1.tnode;
                         }
                         else
                         {
-                            printf("decl no");
                             $$.tnode = $2.tnode;
                         }
-                        printf("decl list\n");
                     }
 
                 | decl
@@ -169,21 +167,16 @@ param_list      : param_list COMMA param
                         {
                             while(temp->sibling)
                             {
-                                printf("sib %s\n", temp->name);
-
                                 temp = temp->sibling;
-                                printf("sib %s\n", temp->name);
                             }
                             temp->sibling = $3.tnode;
                             $$.tnode = $1.tnode;
                         }
                         else
                         {
-                            printf("param no");
                             $$.tnode = $3.tnode;
                         }
 
-                        printf("ys\n");
                     }
                 | param
                     { $$.tnode = $1.tnode; }
@@ -233,10 +226,8 @@ local_decl      : local_decl var_decl
                         }
                         else
                         {
-                            printf("local no");
                             $$.tnode = $2.tnode;
                         }
-                        printf("local\n");
                     }
                 | epsilon { $$.tnode = NULL; }
                 ;
@@ -258,10 +249,8 @@ stmt_list       : stmt_list stmt
                         }
                         else
                         {
-                            printf("stmt no");
                             $$.tnode = $2.tnode;
                         }
-                        printf("stmt list\n");
                     }
                 | epsilon { $$.tnode = NULL; }
                 ;
@@ -425,7 +414,6 @@ call            : ID {  savedName = copyString(idString);
                         savedLineNo = lineno; }
                     LPAREN args RPAREN
                     {
-                        printf("\t\tCALL %s\n", savedName);
                         $$.tnode = newStmtNode(CallK);
                         $$.tnode->name = savedName;
                         $$.tnode->child[0] = $4.tnode;
@@ -455,10 +443,8 @@ arg_list        : arg_list COMMA expr
                         }
                         else
                         {
-                            printf("arg list no");
                             $$.tnode = $3.tnode;
                         }
-                        printf("arg list\n");
                     }
                 | expr
                     { $$.tnode = $1.tnode; }

@@ -10,9 +10,18 @@
 #include "scan.h"
 #include "parse.h"
 
+/* allocate global variables */
+int lineno = 0;
+FILE * source;
+FILE * listing;
+FILE * code;
+
 int main(int argc, char const *argv[])
 {
 	struct TreeNode * tree;
+
+	source = fopen("test.cm", "r"); // file with the code
+	listing = fopen("test.abs", "w");
 	
 	tree = parse();
     fprintf(stdout,"\nSyntax tree:\n");

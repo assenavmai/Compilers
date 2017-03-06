@@ -12,13 +12,11 @@
     #include "scan.h"
     #include "util.h"
 
-    void yyerror(char *);
+   // void yyerror(char *);
 
     char tokenString[MAXTOKENLEN+1];
     char idString[MAXTOKENLEN+1];
     char numString[MAXTOKENLEN+1];
-
-    int lineno = 0;
 %}
 
 %x COMMENT
@@ -69,15 +67,19 @@ whitespace              [ \t]+
 
 int getToken(void)
 { 
+    static int firstTime = TRUE;
     int currentToken;
+  
+    if (firstTime)
+    { 
+        firstTime = FALSE;
+        lineno++;
+        yyin = source;
+        yyout = listing;
+    }
 
     currentToken = yylex();
     strncpy(tokenString, yytext, MAXTOKENLEN);
-
-   // printf("LEX ");
-   // printToken(currentToken,tokenString);
-
-  //  printf("CUrrent %d %s\n", currentToken, tokenString);
 
     return currentToken;
 }
