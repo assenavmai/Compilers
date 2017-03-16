@@ -9,6 +9,7 @@
 #ifndef _HASH_H
 #define _HASH_H_
 
+#define MIN_TABLE_SIZE 1
 #define MAXSIZE 19937
 #define SHIFT 4
 
@@ -46,7 +47,7 @@ void destroyTable(struct HTable * table);
 
 
 /**
-* struct HTable * insert(char * key, enum ExpType type, int tokenValue, int lineno);
+* void insert(struct HTable * hashTable, char * key, enum ExpType type, int tokenValue, int lineno)
 * Used in: hash.c, cm.y
 *
 * Inserts a node into the hash table
@@ -56,9 +57,8 @@ void destroyTable(struct HTable * table);
 * @param tokenValue: value of the token
 * @param lineno: line number
 *
-* @return the hashtable with the new node
 **/
-struct HTable * insert(char * key, enum ExpType type, int tokenValue, int lineno);
+void insert(struct HTable * hashTable, char * key, enum ExpType type, int tokenValue, int lineno);
 
 /**
 * int hash(char * key);

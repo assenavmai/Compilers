@@ -14,10 +14,10 @@ struct Entry * createEntryList() {
 	return entries;
 }
 
-// incomplete
 void destroyEntries(struct Entry * entries) {
 
-	free(newEntry->key);
+	free(entries->key);
+	free(entries);
 }
 
 struct Entry * newEntryNode(char * key, enum ExpType type, int tokenValue, int lineno) {
@@ -58,7 +58,7 @@ struct Entry * addToFront(struct Entry * entries, struct Entry * toAdd) {
 
 struct Entry * removeFromFront(struct Entry * entries) {
 
-	struct Entry * temp;
+	struct Entry *temp;
 
 	temp = entries;
 
@@ -68,8 +68,10 @@ struct Entry * removeFromFront(struct Entry * entries) {
 	}
 	else
 	{
-		temp = entries->next;
-		entries = temp;
+
+		temp = entries;
+		entries = entries->next;
+		destroyEntries(temp);
 	}
 
 	return entries;

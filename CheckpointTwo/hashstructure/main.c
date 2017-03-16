@@ -1,4 +1,5 @@
-#include "entry.h"
+#include "hash.h"
+
 
 int main(int argc, char const *argv[])
 {
@@ -23,5 +24,24 @@ int main(int argc, char const *argv[])
 
 	
 	printEntries(ent);
+	struct Entry *temp;
+
+	while(ent)
+	{
+		temp = ent;
+		ent = ent->next;
+		destroyEntries(temp);
+	}
+
+	free(ent);
+
+
+	/*struct HTable * ht;
+
+	ht = create(1000);
+
+	insert(ht, "1", 1, 0, 3);
+
+	printTable(ht);*/
 	return 0;
 }
