@@ -6,7 +6,7 @@ CC = gcc
 
 CFLAGS =
 
-OBJS = hash.o main.o entry.o
+OBJS = hash.o entry.o main.o 
 
 hash: $(OBJS)
 	$(CC) $(CFLAGS) $(OBJS) -o hash 

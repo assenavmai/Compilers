@@ -13,6 +13,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "../globals.h"
+
 struct Entry {
 
 	char * key;
