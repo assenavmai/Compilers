@@ -6,7 +6,7 @@ CC = gcc
 
 CFLAGS =
 
-OBJS = hash.o main.o list.o
+OBJS = hash.o main.o entry.o
 
 hash: $(OBJS)
 	$(CC) $(CFLAGS) $(OBJS) -o hash 
@@ -17,8 +17,8 @@ main.o: main.c hash.h
 hash.o: hash.c hash.h 
 	$(CC) $(CFLAGS) -c hash.c
 
-list.o: list.c list.h
-	$(CC) $(CFLAGS) -c list.c
+entry.o: entry.c entry.h
+	$(CC) $(CFLAGS) -c entry.c
 
 clean:
 	rm -f hash $(OBJS) 
