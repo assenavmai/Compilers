@@ -110,6 +110,8 @@ var_decl        : type_spec ID {    savedName = copyString(idString);
                         $$.tnode->name = savedName;
                         $$.tnode->etype = $1.type;
                         $$.tnode->pos = savedLineNo;
+
+                        // insert
                     }
                 | type_spec ID {    savedName = copyString(idString); 
                                     savedLineNo = lineno; } 
@@ -120,6 +122,8 @@ var_decl        : type_spec ID {    savedName = copyString(idString);
                         $$.tnode->name = savedName;
                         $$.tnode->etype = Array;
                         $$.tnode->pos = savedLineNo;
+
+                        // insert
                     }
                 ;
 
@@ -130,16 +134,18 @@ type_spec       : INT
                 ;
 
 fun_decl        : type_spec ID { $$.str = copyString(idString);
-                                savedLineNo = lineno; printf("\tYACC ID %s\n", savedName);} 
+                                savedLineNo = lineno; } 
                     LPAREN params RPAREN compound_stmt
                     {
+                        printf("New Scope - Function\n");
                         $$.tnode = newDeclNode(FunK);
-                        printf("\t\tNEW TYPE ID %s\n", idString);
                         $$.tnode->name = $3.str;
                         $$.tnode->etype = $1.type;
                         $$.tnode->pos = savedLineNo;
                         $$.tnode->child[0] = $5.tnode;
                         $$.tnode->child[1] = $7.tnode;
+
+                        //insert
                     }
                 | LPAREN error RPAREN compound_stmt { fprintf(stderr, "Error in function declaration statement\n"); }  
                 ;
@@ -182,6 +188,8 @@ param           : type_spec ID
                         $$.tnode->pos = lineno;
                         $$.tnode->name = copyString(idString);
                         $$.tnode->etype = $1.type;
+
+                        // insert
                     }
                 | type_spec ID {    savedName = copyString(idString);
                                     savedLineNo = lineno; }
@@ -191,6 +199,8 @@ param           : type_spec ID
                         $$.tnode->pos = savedLineNo;
                         $$.tnode->name = savedName;
                         $$.tnode->etype = Array;
+
+                        // insert
                     }
                 ;
 
@@ -224,7 +234,7 @@ local_decl      : local_decl var_decl
                             $$.tnode = $2.tnode;
                         }
                     }
-                | epsilon { $$.tnode = NULL; }
+                | epsilon { $$.tnode = NULL; printf("New Scope - Local Decl\n"); }
                 ;
 
 stmt_list       : stmt_list stmt
@@ -323,6 +333,8 @@ var             : ID
                         /* check if undeclared */
                         $$.tnode = newExpNode(IdK);
                         $$.tnode->name = copyString(idString);
+
+                        // insert
                     }
                 | ID {  savedName = copyString(idString);
                         savedLineNo = lineno; }
@@ -332,6 +344,8 @@ var             : ID
                         $$.tnode->name = savedName;
                         $$.tnode->pos = savedLineNo;
                         $$.tnode->child[0] = $4.tnode;
+
+                        // insert
                     }
                 ;
 
