@@ -1,14 +1,15 @@
 /************************************************
-* File: list.h 
-* linked list data structure specification
+* File: entry.c
+* Linked list functions
 * Authors: Jasmine Kandloosi and Vanessa White
 * March 2017
 *************************************************/
+#include "entry.h"
 
+struct Entry * createEntryList() {
 
-#ifndef _LIST_H
-#define _LIST_H_
-
-
-
-#endif
+	struct Entry * entries;
+	entries = NULL;
+	
+	return entries;
+}
