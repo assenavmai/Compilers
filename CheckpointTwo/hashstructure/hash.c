@@ -74,11 +74,11 @@ void insert(struct HTable * hashTable, char * key, enum ExpType type, int tokenV
 	hashIndex = hash(key);
 
 	newEntry = newEntryNode(key, type, tokenValue, lineno);
-	///entries = hashTable->table[hashIndex]
-	newEntry->next = hashTable->table[hashIndex];
-	hashTable->table[hashIndex] = newEntry;
-
-	///newEntry = addToFront(newEntry, newEntry);
+	//newEntry->next = hashTable->table[hashIndex];
+	//hashTable->table[hashIndex] = newEntry;
+	
+	entries = hashTable->table[hashIndex];
+	newEntry = addToFront(entries, newEntry);
 }
 
 int hash(char * key) {
@@ -123,8 +123,10 @@ struct Entry * lookup(struct HTable * hashTable, char * key) {
 void deleteKey(struct HTable * hashTable, char * key) {
 
 	struct Entry * temp;
+	int hashIndex = 0;
 
 	temp = lookup(hashTable, key);
+	hashIndex = hash(key);
 
 	if(!temp)
 	{
@@ -133,6 +135,7 @@ void deleteKey(struct HTable * hashTable, char * key) {
 	else
 	{
 		destroyEntries(temp);
+		//hashTable->table[hashIndex];
 		hashTable->size = hashTable->size - 1;
 	}
 }

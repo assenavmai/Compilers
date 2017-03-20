@@ -8,6 +8,12 @@ CFLAGS =
 
 OBJS = hash.o entry.o main.o 
 
+list: list.o
+	$(CC) $(CFLAGS) list.o -o list
+
+list.o: list.c
+	$(CC) $(CFLAGS) -c list.c 
+
 hash: $(OBJS)
 	$(CC) $(CFLAGS) $(OBJS) -o hash 
 
@@ -21,4 +27,4 @@ entry.o: entry.c entry.h
 	$(CC) $(CFLAGS) -c entry.c
 
 clean:
-	rm -f hash $(OBJS) 
+	rm -f hash list $(OBJS) 

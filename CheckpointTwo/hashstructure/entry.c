@@ -16,6 +16,9 @@ struct Entry * createEntryList() {
 
 void destroyEntries(struct Entry * entries) {
 
+	entries->type = 0;
+	entries->tokenValue = 0;
+	entries->lineno = 0;
 	free(entries->key);
 	free(entries);
 }
