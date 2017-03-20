@@ -12,7 +12,7 @@ struct HTable * create(int size) {
 	int i;
 
 	newTable = malloc(sizeof(struct HTable));
-	newTable->table = malloc(sizeof(struct Entry *) * size);
+	newTable->table = malloc(sizeof(struct entryList *) * size);
 
 	if(!newTable || !newTable->table)
 	{
@@ -37,7 +37,7 @@ struct HTable * create(int size) {
 }
 
 //incomplete
-void destroyTable(struct HTable * hashTable) {
+/*void destroyTable(struct HTable * hashTable) {
 
 	int i = 0;
 
@@ -57,28 +57,31 @@ void destroyTable(struct HTable * hashTable) {
 	free(hashTable->table);
 	free(hashTable);
 }
-
+*/
 void insert(struct HTable * hashTable, char * key, enum ExpType type, int tokenValue, int lineno) {
 
-	struct Entry *newEntry, *entries;
+	struct entryList *newNode, *list;
 	int hashIndex = 0;
 
-	newEntry = malloc(sizeof(struct Entry));
-
-	if(!newEntry)
+	newNode = malloc(sizeof(struct entryList));
+	if(!newNode)
 	{
 		fprintf(stderr, "in hash.c: Out of memory.\n");
 		exit(1);
 	}
 
 	hashIndex = hash(key);
-
-	newEntry = newEntryNode(key, type, tokenValue, lineno);
-	//newEntry->next = hashTable->table[hashIndex];
-	//hashTable->table[hashIndex] = newEntry;
+	newNode->head = initnode(key, type, tokenValue, lineno);
 	
-	entries = hashTable->table[hashIndex];
-	newEntry = addToFront(entries, newEntry);
+	list = hashTable->table[hashIndex];
+	addToList(list, key, type, tokenValue, lineno);
+
+
+	//newNode->head->next = hashTable->table[hashIndex];
+	//hashTable->table[hashIndex] = newNode;
+	
+	//list = hashTable->table[hashIndex];
+	//newNode = addToList(list, key, type, tokenValue, lineo);
 }
 
 int hash(char * key) {
@@ -95,7 +98,7 @@ int hash(char * key) {
 	return temp;
 }
 
-struct Entry * lookup(struct HTable * hashTable, char * key) {
+/*struct Entry * lookup(struct HTable * hashTable, char * key) {
 
 	struct Entry * entries;
 	int hashIndex = hash(key);
@@ -139,7 +142,7 @@ void deleteKey(struct HTable * hashTable, char * key) {
 		hashTable->size = hashTable->size - 1;
 	}
 }
-
+*/
 void printTable(struct HTable * hashTable) {
 
 	int i = 0;
@@ -153,7 +156,7 @@ void printTable(struct HTable * hashTable) {
 	{
 		if(hashTable->table[i])
 		{
-			printEntries(hashTable->table[i]);
+			printList(hashTable->table[i]);
 		}
 	}
 }

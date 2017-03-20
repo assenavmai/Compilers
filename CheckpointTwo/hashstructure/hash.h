@@ -14,12 +14,12 @@
 #define SHIFT 4
 
 #include "../globals.h"
-#include "entry.h"
+#include "list.h"
 
 struct HTable {
 
 	int size;
-	struct Entry ** table;
+	struct entryList ** table;
 };
 
 /**
@@ -73,7 +73,7 @@ void insert(struct HTable * hashTable, char * key, enum ExpType type, int tokenV
 int hash(char * key);
 
 /**
-* struct Entry * lookup(struct HTable * table, char * key);
+* struct entryList * lookup(struct HTable * table, char * key);
 * Used in: hash.c, cm.y
 *
 * Looks up a node in the hash table
@@ -83,7 +83,7 @@ int hash(char * key);
 *
 * @return the hashtable with the new node
 **/
-struct Entry * lookup(struct HTable * table, char * key);
+struct entryList * lookup(struct HTable * table, char * key);
 
 /**
 * void deleteKey(struct HTable * table, char * key);
