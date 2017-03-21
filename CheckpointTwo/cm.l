@@ -11,6 +11,7 @@
     #include "y.tab.h"
     #include "scan.h"
     #include "util.h"
+    #include "hash.h"
 
     char tokenString[MAXTOKENLEN+1];
     char idString[MAXTOKENLEN+1];

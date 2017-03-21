@@ -28,16 +28,17 @@ struct HTable * create(int size) {
 
 	for(i = 0; i < size; i++)
 	{
-		newTable->table[i] = 0;
+		newTable->table[i] = createList();
 	}
 
 	newTable->size = size;
+	newTable->elements = 0;
 
 	return newTable;
 }
 
 //incomplete
-/*void destroyTable(struct HTable * hashTable) {
+void destroyTable(struct HTable * hashTable) {
 
 	int i = 0;
 
@@ -48,40 +49,24 @@ struct HTable * create(int size) {
 
 	for(i = 0; i < hashTable->size; i++)
 	{
-		if(hashTable)
-		{
-			destroyEntries(hashTable->table[i]);
-		}
+		//destroyList(hashTable->table[i]);
+		hashTable->table[i] = NULL;
 	}
 
 	free(hashTable->table);
 	free(hashTable);
 }
-*/
+
 void insert(struct HTable * hashTable, char * key, enum ExpType type, int tokenValue, int lineno) {
 
 	struct entryList *newNode, *list;
 	int hashIndex = 0;
 
-	newNode = malloc(sizeof(struct entryList));
-	if(!newNode)
-	{
-		fprintf(stderr, "in hash.c: Out of memory.\n");
-		exit(1);
-	}
-
 	hashIndex = hash(key);
-	newNode->head = initnode(key, type, tokenValue, lineno);
 	
 	list = hashTable->table[hashIndex];
 	addToList(list, key, type, tokenValue, lineno);
 
-
-	//newNode->head->next = hashTable->table[hashIndex];
-	//hashTable->table[hashIndex] = newNode;
-	
-	//list = hashTable->table[hashIndex];
-	//newNode = addToList(list, key, type, tokenValue, lineo);
 }
 
 int hash(char * key) {
@@ -98,9 +83,9 @@ int hash(char * key) {
 	return temp;
 }
 
-/*struct Entry * lookup(struct HTable * hashTable, char * key) {
+struct entryList * lookup(struct HTable * hashTable, char * key) {
 
-	struct Entry * entries;
+	struct entryList * entries;
 	int hashIndex = hash(key);
 
 	entries = hashTable->table[hashIndex];
@@ -110,14 +95,14 @@ int hash(char * key) {
 		printf("in lookup: entries list is null.\n");
 	}
 
-	while(entries)
+	while(entries->head)
 	{
-		if(strcmp(key, entries->key) == 0)
+		if(strcmp(key, entries->head->key) == 0)
 		{
 			return entries;
 		}
 
-		entries = entries->next;
+		entries->head = entries->head->next;
 	}
 
 	return NULL;
@@ -125,24 +110,24 @@ int hash(char * key) {
 
 void deleteKey(struct HTable * hashTable, char * key) {
 
-	struct Entry * temp;
+	struct entryList * entries;
 	int hashIndex = 0;
 
-	temp = lookup(hashTable, key);
 	hashIndex = hash(key);
+	entries = hashTable->table[hashIndex];
 
-	if(!temp)
+	while(entries->head)
 	{
-		return;
-	}
-	else
-	{
-		destroyEntries(temp);
-		//hashTable->table[hashIndex];
-		hashTable->size = hashTable->size - 1;
+		if(strcmp(key, entries->head->key) == 0)
+		{
+			removeFromList(entries);
+		}
+		//printf("After remove %s\n", entries->head->next->key);
+
+		entries->head = entries->head->next;
 	}
 }
-*/
+
 void printTable(struct HTable * hashTable) {
 
 	int i = 0;
@@ -159,4 +144,32 @@ void printTable(struct HTable * hashTable) {
 			printList(hashTable->table[i]);
 		}
 	}
+}
+
+void printHash(struct HTable * h) {
+
+	struct entryNode * temp, *check;
+	struct entryList * list;
+	int i = 0;
+
+	if(!h)
+	{
+		printf("table empty\n");
+	}
+
+	for(i = 0; i < h->size; i++)
+	{
+		list = h->table[i];
+		temp = list->head;
+
+		while(list->head)
+		{
+			check = list->head;
+			printf("%s %d %d %d\n", check->key, check->type, check->tokenValue, check->lineno);
+
+			list->head = list->head->next;
+		}
+		list->head = temp;
+	}
+
 }

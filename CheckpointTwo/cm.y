@@ -12,6 +12,7 @@
     #include "util.h"
     #include "scan.h"
     #include "parse.h"
+    #include "hash.h"
 
     #define YYSTYPE tokenTypes
 
@@ -111,7 +112,14 @@ var_decl        : type_spec ID {    savedName = copyString(idString);
                         $$.tnode->etype = $1.type;
                         $$.tnode->pos = savedLineNo;
 
-                        // insert
+                        if(lookup(htable, idString) != NULL)
+                        {
+                            printf("variable %s is previously declared\n", idString);
+                        }
+                        else
+                        {
+                            insert(htable, idString, $1.type, lineno, 0);
+                        }
                     }
                 | type_spec ID {    savedName = copyString(idString); 
                                     savedLineNo = lineno; } 

@@ -19,6 +19,7 @@
 struct HTable {
 
 	int size;
+	int elements;
 	struct entryList ** table;
 };
 
@@ -107,6 +108,8 @@ void deleteKey(struct HTable * table, char * key);
 *
 **/
 void printTable(struct HTable * table);
+
+void printHash(struct HTable * h);
 
 
 #endif

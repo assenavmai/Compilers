@@ -10,6 +10,7 @@
 #include "util.h"
 #include "scan.h"
 #include "parse.h"
+#include "hash.h"
 
 /* allocate global variables */
 int lineno = 0;
