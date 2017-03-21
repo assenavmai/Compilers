@@ -16,6 +16,7 @@
     char tokenString[MAXTOKENLEN+1];
     char idString[MAXTOKENLEN+1];
     char numString[MAXTOKENLEN+1];
+    struct HTable * htable;
 %}
 
 %x COMMENT
