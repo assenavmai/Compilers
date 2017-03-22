@@ -7,6 +7,7 @@
 *************************************************/
 #include "globals.h"
 #include "util.h"
+#include "symhash.h"
 #include "y.tab.h"
 
 
@@ -298,4 +299,33 @@ void printTree(struct TreeNode * tree)
 		tree = tree->sibling;
 	}
 	UNINDENT;
+}
+
+void typeCheck(struct symhash * tb) {
+
+	struct symlist* list, *temp, *node;
+	int i;
+
+	printf("\n\nType chcking....\n");
+
+	for(i = 0; i < MAXSIZE; i++)
+	{
+		list = tb->table[i];
+		temp = list;
+
+		while(list)
+		{
+			node = list;
+			if(node->type == Array)
+			{
+				printf("\t\t\t\tArray: %s %d\n", node->key, node->token);
+			}
+			/*if(node->type != Undeclared)
+			{
+				printf("%s\t\t%d\t\t%d\t\t%d\n", node->key, node->type, node->token, node->lineno);
+			}*/
+			list = list->next;
+		}
+		list = temp;
+	}
 }

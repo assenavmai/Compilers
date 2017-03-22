@@ -7,16 +7,22 @@ CC = gcc
 
 CFLAGS =
 
-OBJS = y.tab.o lex.yy.o util.o main.o
+OBJS = symhash.o symlist.o y.tab.o lex.yy.o util.o main.o
 
 cm: $(OBJS)
 	$(CC) $(CFLAGS) $(OBJS) -o cm -ly -ll
 
-main.o: main.c globals.h util.h scan.h parse.h
+main.o: main.c globals.h util.h scan.h parse.h 
 	$(CC) $(CFLAGS) -c main.c
 
 util.o: util.c util.h globals.h y.tab.h
 	$(CC) $(CFLAGS) -c util.c
+
+symhash.o: symhash.c symhash.h globals.h
+	$(CC) $(CFLAGS) -c symhash.c
+
+symlist.o: symlist.c symlist.h globals.h scan.h
+	$(CC) $(CFLAGS) -c symlist.c
 
 lex.yy.c: cm.l
 	flex cm.l

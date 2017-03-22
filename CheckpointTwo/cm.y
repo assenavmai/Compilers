@@ -12,6 +12,7 @@
     #include "util.h"
     #include "scan.h"
     #include "parse.h"
+    #include "symhash.h"
 
     #define YYSTYPE tokenTypes
 
@@ -111,7 +112,16 @@ var_decl        : type_spec ID {    savedName = copyString(idString);
                         $$.tnode->etype = $1.type;
                         $$.tnode->pos = savedLineNo;
 
-                        // insert
+                        //insert
+                        if(lookup(ht, savedName) != NULL)
+                        {
+                            printf("var_decl 1: line: %d: error: '%s' is previously declared\n", savedLineNo, savedName);
+                        }
+                        else
+                        {
+                            insert(ht, savedName, $1.type, 0, savedLineNo);
+                        }
+
                     }
                 | type_spec ID {    savedName = copyString(idString); 
                                     savedLineNo = lineno; } 
@@ -120,10 +130,19 @@ var_decl        : type_spec ID {    savedName = copyString(idString);
                         $$.tnode = newDeclNode(VarK);
                         $$.tnode->val = atoi(numString);
                         $$.tnode->name = savedName;
-                        $$.tnode->etype = Array;
+                        $$.tnode->etype = $1.type;
+
                         $$.tnode->pos = savedLineNo;
 
                         // insert
+                        if(lookup(ht, savedName) != NULL)
+                        {
+                            printf("var_decl 2: %s is previously declared\n", savedName);
+                        }
+                        else
+                        {
+                            insert(ht, savedName, Array, $$.tnode->val, savedLineNo);
+                        }
                     }
                 ;
 
@@ -146,6 +165,20 @@ fun_decl        : type_spec ID { $$.str = copyString(idString);
                         $$.tnode->child[1] = $7.tnode;
 
                         //insert
+                        if(lookup(ht, $3.str) != NULL)
+                        {
+                            printf("fun_decl: %s is previously declared\n", $3.str);
+                        }
+                        else
+                        {
+                            printf("yas %d\n", savedLineNo);
+                            insert(ht, $3.str, $1.type, 0, savedLineNo);
+                        }
+
+                        printf("Leaving %s scope...\n", $3.str);
+                        printTable(ht);
+                        typeCheck(ht);
+                        
                     }
                 | LPAREN error RPAREN compound_stmt { fprintf(stderr, "Error in function declaration statement\n"); }  
                 ;
@@ -153,7 +186,7 @@ fun_decl        : type_spec ID { $$.str = copyString(idString);
 params          : param_list
                     { $$.tnode = $1.tnode; } 
                 | VOID
-                    {printf("void params\n");}
+                    {}
                 ;
 
 param_list      : param_list COMMA param
@@ -190,6 +223,15 @@ param           : type_spec ID
                         $$.tnode->etype = $1.type;
 
                         // insert
+                        if(lookup(ht, idString) != NULL)
+                        {
+                            printf("param 1: %s is previously declared\n", idString);
+                        }
+                        else
+                        {
+                            insert(ht, idString, $1.type, 0, savedLineNo);
+                        }
+                        
                     }
                 | type_spec ID {    savedName = copyString(idString);
                                     savedLineNo = lineno; }
@@ -198,9 +240,18 @@ param           : type_spec ID
                         $$.tnode = newDeclNode(ParamK);
                         $$.tnode->pos = savedLineNo;
                         $$.tnode->name = savedName;
-                        $$.tnode->etype = Array;
+                        $$.tnode->etype = $1.type;
 
                         // insert
+                        if(lookup(ht, savedName) != NULL)
+                        {
+                            printf("param 2: %s is previously declared\n", savedName);
+                        }
+                        else
+                        {
+                            insert(ht, savedName, Array, 0, savedLineNo);
+                        }
+
                     }
                 ;
 
@@ -227,11 +278,10 @@ local_decl      : local_decl var_decl
                             }
                             temp->sibling = $2.tnode;
                             $$.tnode = $1.tnode;
-
                         }
                         else
                         {
-                            $$.tnode = $2.tnode;
+                            $$.tnode = $2.tnode; 
                         }
                     }
                 | epsilon { $$.tnode = NULL; printf("New Scope - Local Decl\n"); }
@@ -331,10 +381,14 @@ expr            : var EQ expr
 var             : ID
                     { 
                         /* check if undeclared */
+                        if(lookup(ht, idString) == NULL)
+                        {
+                            printf("var 1 line: %d: error: '%s' is undeclared (first use in function) \n", lineno, idString);
+                            insert(ht, idString, Undeclared, 0, 0);
+                        } 
+
                         $$.tnode = newExpNode(IdK);
                         $$.tnode->name = copyString(idString);
-
-                        // insert
                     }
                 | ID {  savedName = copyString(idString);
                         savedLineNo = lineno; }
@@ -346,6 +400,11 @@ var             : ID
                         $$.tnode->child[0] = $4.tnode;
 
                         // insert
+                        if(lookup(ht, savedName) == NULL)
+                        {
+                            printf("var 2 line: %d: error: '%s' is undeclared (first use in function) \n", lineno, idString);
+                            insert(ht, savedName, Undeclared, 0, 0);
+                        }
                     }
                 ;
 
