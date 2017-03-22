@@ -49,6 +49,7 @@ struct TreeNode {
 	char * name;
 	enum NodeKind nodeKind;
 	enum ExpType etype;
+	int isArray;
 	
 	union {
 		enum StmtKind stmt;

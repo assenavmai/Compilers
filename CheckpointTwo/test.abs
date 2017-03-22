@@ -2,14 +2,8 @@
 Syntax tree:
     Function: void main()
         Compound:
-            Var: int a
             Var: int x
             Var: void y
             Assign operation: =
-                Id: a
-                    Id: x
-                Const: 1
-            Assign operation: =
-                Id: a
-                    Id: y
-                Const: 2
+                Id: y
+                Id: x

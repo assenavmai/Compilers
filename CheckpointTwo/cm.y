@@ -131,6 +131,7 @@ var_decl        : type_spec ID {    savedName = copyString(idString);
                         $$.tnode->val = atoi(numString);
                         $$.tnode->name = savedName;
                         $$.tnode->etype = $1.type;
+                        $$.tnode->isArray = 1;
 
                         $$.tnode->pos = savedLineNo;
 
@@ -381,9 +382,10 @@ expr            : var EQ expr
 var             : ID
                     { 
                         /* check if undeclared */
+                        printf("Var: %s\n", idString);
                         if(lookup(ht, idString) == NULL)
                         {
-                            printf("var 1 line: %d: error: '%s' is undeclared (first use in function) \n", lineno, idString);
+                            printf("var 1 line: %d: error: '%s' is undeclared\n", lineno, idString);
                             insert(ht, idString, Undeclared, 0, 0);
                         } 
 
@@ -394,6 +396,7 @@ var             : ID
                         savedLineNo = lineno; }
                     LBRAC expr RBRAC
                     {
+                        printf("Line: %s[%s]\n", savedName, $4.str);
                         $$.tnode = newExpNode(IdK);
                         $$.tnode->name = savedName;
                         $$.tnode->pos = savedLineNo;
@@ -402,7 +405,7 @@ var             : ID
                         // insert
                         if(lookup(ht, savedName) == NULL)
                         {
-                            printf("var 2 line: %d: error: '%s' is undeclared (first use in function) \n", lineno, idString);
+                            printf("var 2 line: %d: error: '%s' is undeclared\n", lineno, idString);
                             insert(ht, savedName, Undeclared, 0, 0);
                         }
                     }
@@ -477,6 +480,7 @@ factor          : LPAREN expr RPAREN
                     { $$.tnode = $1.tnode; }
                 | NUM
                     {
+                        printf("Constant = %s\n", numString);
                         $$.tnode = newExpNode(ConstK);
                         $$.tnode->val = atoi(numString);
                     }
