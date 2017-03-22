@@ -36,7 +36,7 @@ enum StmtKind { IfK, ReturnK, WhileK, CmpdK, AssignK, CallK };
 enum ExpKind  { OpK, ConstK, IdK};
 enum DeclKind { VarK, FunK, ParamK };
 
-enum ExpType {Void,Integer, Array};  /* Type specifiers */
+enum ExpType {Void,Integer, Array, Undeclared};  /* Type specifiers */
 
 struct TreeNode {
 
@@ -49,6 +49,7 @@ struct TreeNode {
 	char * name;
 	enum NodeKind nodeKind;
 	enum ExpType etype;
+	
 	union {
 		enum StmtKind stmt;
 		enum ExpKind exp;

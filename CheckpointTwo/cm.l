@@ -11,12 +11,12 @@
     #include "y.tab.h"
     #include "scan.h"
     #include "util.h"
-    #include "hash.h"
+    #include "symhash.h"
 
     char tokenString[MAXTOKENLEN+1];
     char idString[MAXTOKENLEN+1];
     char numString[MAXTOKENLEN+1];
-    struct HTable * htable;
+    struct symhash *ht;
 %}
 
 %x COMMENT
@@ -58,7 +58,7 @@ whitespace              [ \t]+
 "}"                     {return RCURL;}
 "/*"                    { skipComments(); }
 {newline}               {lineno++;}
-{identifier}            { strcpy(idString, yytext); printf("ID %s\n", idString); return ID;}
+{identifier}            { strcpy(idString, yytext); return ID;}
 {number}                { strcpy(numString, yytext); return NUM;}
 {whitespace}            { /* skip whitespace */ }
 .                       { panicMode(); }

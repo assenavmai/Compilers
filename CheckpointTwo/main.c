@@ -10,7 +10,8 @@
 #include "util.h"
 #include "scan.h"
 #include "parse.h"
-#include "hash.h"
+#include "symhash.h"
+
 
 /* allocate global variables */
 int lineno = 0;
@@ -27,6 +28,8 @@ int main(int argc, char const *argv[])
 	char ch;
 	int i = 0;
 	int j = 0;
+
+	ht = createTable();
 
 	if(argc < 3)
 	{
@@ -90,6 +93,7 @@ int main(int argc, char const *argv[])
 		fprintf(listing,"\nSyntax tree:\n");
 		printTree(tree);
 	}
+    printTable(ht);
 	
 	return 0;
 }
