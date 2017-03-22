@@ -33,6 +33,7 @@ struct TreeNode * newDeclNode(enum DeclKind dec) {
 		node->nodeKind = DeclKind;
 		node->kind.dec = dec;
 		node->pos = lineno;
+		node->isArray = 0;
 	}
 
 	return node;
@@ -257,7 +258,7 @@ void printTree(struct TreeNode * tree)
 			switch(tree->kind.dec)
 			{
 				case VarK:
-					if(tree->etype == Array)
+					if(tree->isArray == 1)
 					{
 						fprintf(listing, "int %s[%d]\n", tree->name, tree->val);
 					}
