@@ -1,30 +1,31 @@
 /*****************************
 * File: 3.cm
 * Errors in file:
-	* additonal unknown symbols found in the code (line 14, 19, 25)
-	* unknown function type (line 22)
+	* int variable is using a void variable for computing an integer value (line 26)
+	* 
 	*
 
 * Compiler is testing against these errors:
-	* lexigal analysis
-	* syntactic error for function declaration
+	* matching two operands
+	* 
 	*
 *******************************/
 int gcd (int u, int v)
-{ ???
-	if (v == 0) return u;
+{
+	if (v >= 0) return u;
 
 	else return gcd(v, u-u/v*v);
 	/*u-u/v*v = = u mod v */
-				\
+
 }
 
-char addthree (int a, int b, int c)
+int func (int a)
 {
-	int result;
-	&
-	result = a + b + c;
-	return result;
+	int x; int y; void s; 
+	x = x + 3 * 4 /2;
+	y = x - 4 * s;
+
+	return x;
 }
 
 void main (void)

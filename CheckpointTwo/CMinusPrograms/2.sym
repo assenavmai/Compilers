@@ -1,0 +1,14 @@
+Enter global:
+    Enter gcd:
+    Leaving scope
+        Enter addthree:
+                    int arr[2]
+                    void res
+                    int result
+        Leaving scope
+Enter main:
+    void c
+    int bb[2]
+    int x
+Leaving scope
+Leaving global...

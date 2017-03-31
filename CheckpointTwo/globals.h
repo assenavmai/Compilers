@@ -18,6 +18,8 @@
 #endif
 
 #define MAXCHILDREN 3 /* max amount of children the root can have */
+#define ANSI_COLOR_RED     "\x1b[31m"
+#define ANSI_COLOR_RESET   "\x1b[0m"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -31,7 +33,7 @@ extern FILE* code; /* code text file for TM simulator */
 extern int lineno; /* source line number for listing */
 
 /* The type of statements for the CMinus language */
-enum NodeKind { StmtKind, ExpKind, DeclKind, SpecKind };
+enum NodeKind { StmtKind, ExpKind, DeclKind };
 enum StmtKind { IfK, ReturnK, WhileK, CmpdK, AssignK, CallK };
 enum ExpKind  { OpK, ConstK, IdK};
 enum DeclKind { VarK, FunK, ParamK };

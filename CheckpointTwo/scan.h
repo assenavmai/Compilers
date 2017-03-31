@@ -17,6 +17,8 @@ extern char tokenString[MAXTOKENLEN+1];
 extern char idString[MAXTOKENLEN+1];
 extern char numString[MAXTOKENLEN+1];
 extern struct symhash * ht;
+extern struct symlist * templist;
+
 
 
 /**

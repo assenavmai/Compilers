@@ -12,12 +12,14 @@ struct symlist {
   enum ExpType type;
   int token;
   int lineno;
+  int scopelvl;
+  int isDeleted;
   struct symlist * next;
 };
 
 struct symlist * createList();
 struct symlist * addFront(struct symlist * list, struct symlist * toAdd);
-struct symlist * initNode(char * key, enum ExpType type, int token, int lineno);
+struct symlist * initNode(char * key, enum ExpType type, int token, int lineno, int scopelvl);
 void destroyList(struct symlist * list);
 void printList(struct symlist * list);
 struct symlist * removeFront(struct symlist * list);

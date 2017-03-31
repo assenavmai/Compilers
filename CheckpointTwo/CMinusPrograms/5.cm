@@ -1,43 +1,56 @@
 /*****************************
 * File: 5.cm
 * Errors in file:
-	* incorrect return statement (line 27)
-	* incorrect if-else statment (line 15)
-	* incorrect call statement (line 36)
-	* additonal unknown symbols found in the code (line 16, 22, 32)
-	* unknown function type (line 24)
-	* incorrect addition operators (line 31)
+	* void variable is being used in defining where a value is to be placed (line 54)
+	* void variable is being set a value by an int variable (line 34)
+	* int variable is using a void variable for computing an integer value (line 43)
+	* return type is int instead of void for function addthree (line 36)
+	* test condition for an if-statement is a void type instead of an int type (line 21)
+	* 
 
 * Compiler is testing against these errors:
-	* syntactic error for return statement
-	* syntactic error for if statement
-	* syntactic error for call
-	* lexigal analysis
-	* syntactic error for function declaration
-	* syntactic error for addop
+	* array range isn't of type int 
+	* type checking two sides of an assignment
+	* matching two operands
+	* function declaration and return expression don't match
+	* test condition for if-statement must be an integer value
+	* 
 *******************************/
-int gcd (int u, int v)
-{ #
-	if ( == 0) return u;
-
-	else return gcd(v, u-u/v*v);
-	/*u-u/v*v = = u mod v */
-
-} ???
-
-char addthree (int a, int b, int c)
+int gcd (int u, void v, int x)
 {
-	int result;
+	if (v) return u;
 
-	while (result != 20)
-	{
-		result = a ++ b + c;
-	}
-	return res0lt; %%%%
+	else return gcd(u-u/x*x);
+	/*u-u/x*x = = u mod x */
+
+}
+
+void addthree (int a, int b, int c)
+{
+	int result; void res;
+
+	result = a + b + c;
+
+	res = result;
+
+	return result;
+}
+
+int func (int a)
+{
+	int x; int y; void s; 
+	x = x + 3 * 4 /2;
+	y = x - 4 * s;
+
+	return x;
 }
 
 void main (void)
 {
-	output(gcd(4,5));
-	output(addthree(1,,3));
+	int x; int bb[2];
+	void c;
+
+	a = 2;
+	bb[x] = 1;
+	bb[c] = 2;
 }

@@ -15,10 +15,11 @@ struct symhash {
 };
 
 struct symhash* createTable();
-void insert(struct symhash * tb, char * key, enum ExpType type, int token, int lineno);
+void insert(struct symhash * tb, char * key, enum ExpType type, int token, int lineno, int scopelvl);
 struct symlist * lookup(struct symhash *tb, char * key);
 void printTable(struct symhash * tb);
 int hash(char * key);
-
 void update(struct symhash * tb, char * key, int newValue);
+void deleteValue(struct symhash *tb, char * key);
+void destroyTable(struct symhash *t);
 #endif

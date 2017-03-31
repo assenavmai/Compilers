@@ -8,6 +8,8 @@
 #ifndef _UTIL_H_
 #define _UTIL_H_
 
+#include "symlist.h"
+
 /**
 * [FUNCTION PROTOTYPE]
 * Used in: [list files]
@@ -128,6 +130,11 @@ char * copyString(char  * str);
 **/
 void panicMode();
 
+void preOrder(struct TreeNode * tree);
+void typeCheck(struct TreeNode * tree);
+
+struct symlist * scopeLookup(struct symhash * tb, char * key, int scopelvl);
+void printSymbolTable(struct symhash * tb, struct symlist * list, int rep);
 #endif
 
 

@@ -302,31 +302,104 @@ void printTree(struct TreeNode * tree)
 	UNINDENT;
 }
 
-void typeCheck(struct symhash * tb) {
+void printSymbolTable(struct symhash * tb, struct symlist * list, int rep) {
 
-	struct symlist* list, *temp, *node;
 	int i;
+	struct symlist * find;
 
-	printf("\n\nType chcking....\n");
-
-	for(i = 0; i < MAXSIZE; i++)
+	if(!list)
 	{
-		list = tb->table[i];
-		temp = list;
+		UNINDENT;
+	}
 
+	INDENT;
+	printSpaces();
+
+	if(!list)
+	{
+		fprintf(listing, "Leaving scope\n");
+		INDENT;
+		return;
+	}
+
+	if(rep == 0)
+	{
+		if(list->key)
+		{
+			fprintf(listing, "Enter %s:\n", list->key);
+		}
+		rep++;
+	}
+	else
+	{
+		UNINDENT;
+		printSpaces();
+		printTypeSpec(list->type);
+
+		find = lookup(ht, list->key);
+
+		if(find->type == Array)
+		{
+			if(list->token == 0)
+			{
+				fprintf(listing, "%s[]\n", list->key);
+			}
+			else
+			{
+				fprintf(listing, "%s[%d]\n", list->key,list->token);
+			}
+		}
+		else
+		{
+			fprintf(listing, "%s\n", list->key);
+		}
+	}
+
+	//printf("\t\t\tll key: %s type: %d token: %d lineno: %d\n", list->key, list->type, list->token, list->lineno);
+	printSymbolTable(tb, list->next, rep);
+	
+
+	UNINDENT;
+}
+
+
+struct symlist * scopeLookup(struct symhash * tb, char * key, int scopelvl) {
+
+	struct symlist * list;
+	int index = 0;
+	int scope = scopelvl;
+
+	if(!key)
+	{
+		return NULL;
+	}
+	index = hash(key);
+
+	list = tb->table[index];
+
+	if(!list)
+	{
+		return NULL;
+	}
+
+	while (scope >= 0)
+	{
 		while(list)
 		{
-			node = list;
-			if(node->type == Array)
+			//printf("ScopeLookup current scope: %d\n", scope);
+			if(strcmp(key, list->key) == 0 && list->scopelvl == scope)
 			{
-				printf("\t\t\t\tArray: %s %d\n", node->key, node->token);
+				//printf("Match found at scope %d for key: %s\n",scope, key);
+				return list;
 			}
-			/*if(node->type != Undeclared)
-			{
-				printf("%s\t\t%d\t\t%d\t\t%d\n", node->key, node->type, node->token, node->lineno);
-			}*/
+
 			list = list->next;
 		}
-		list = temp;
+		scope--;
+		list = tb->table[index];
 	}
+	
+
+	return NULL;
+
 }

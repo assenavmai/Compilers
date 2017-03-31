@@ -28,12 +28,14 @@ int main(int argc, char const *argv[])
 	char ch;
 	int i = 0;
 	int j = 0;
+	enum ExpType t;
 
 	ht = createTable();
+	templist = createList();
 
 	if(argc < 3)
 	{
-		fprintf(stderr,"usage: %s [-a] <filename>\n",argv[0]);
+		fprintf(stderr,"usage: %s [-a]|[-s] <filename>\n",argv[0]);
 		exit(1);
 	}
 
@@ -93,7 +95,39 @@ int main(int argc, char const *argv[])
 		fprintf(listing,"\nSyntax tree:\n");
 		printTree(tree);
 	}
-    printTable(ht);
-	
+	else if(strcmp(argv[1], "-s") == 0) // print the symbol table to the file
+	{
+		strcat(outFile, ".sym");
+
+		source = fopen(sourceFilename, "r"); // file with the code
+
+		if(!source)
+		{
+			fprintf(stderr, "Error: File %s not found\n", sourceFilename);
+			exit(1);
+		}
+		
+		#if STDOUT
+			listing = stdout;
+            fprintf(listing, "Enter global:\n");
+
+
+		#else
+		    listing = fopen(outFile, "w");	// file with abstract syntax tree
+			if(!listing)
+			{
+				fprintf(stderr, "Error: File %s not found\n", outFile);
+				exit(1);
+			}
+            fprintf(listing, "Enter global:\n");
+
+		#endif
+
+		tree = parse();
+
+		//fprintf(listing,"\nSyntax tree:\n");
+		//printTree(tree);
+	}
+    //printTable(ht);
 	return 0;
 }
