@@ -1,0 +1,43 @@
+/*****************************
+* File: 5.cm
+* Errors in file:
+	* incorrect return statement (line 27)
+	* incorrect if-else statment (line 15)
+	* incorrect call statement (line 36)
+	* additonal unknown symbols found in the code (line 16, 22, 32)
+	* unknown function type (line 24)
+	* incorrect addition operators (line 31)
+
+* Compiler is testing against these errors:
+	* syntactic error for return statement
+	* syntactic error for if statement
+	* syntactic error for call
+	* lexigal analysis
+	* syntactic error for function declaration
+	* syntactic error for addop
+*******************************/
+int gcd (int u, int v)
+{ #
+	if ( == 0) return u;
+
+	else return gcd(v, u-u/v*v);
+	/*u-u/v*v = = u mod v */
+
+} ???
+
+char addthree (int a, int b, int c)
+{
+	int result;
+
+	while (result != 20)
+	{
+		result = a ++ b + c;
+	}
+	return res0lt; %%%%
+}
+
+void main (void)
+{
+	output(gcd(4,5));
+	output(addthree(1,,3));
+}
