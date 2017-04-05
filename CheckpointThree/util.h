@@ -139,13 +139,29 @@ char * copyString(char  * str);
 **/
 void panicMode();
 
-void printErrorMessages(int typeOfErr);
-
+/**
+* void printSymbolTable(struct symlist * head)
+*
+* prints the symbol table
+* 
+* @param head: head of list
+**/
 void printSymbolTable(struct symlist * head);
 
-void symTable(struct symhash * table);
 
+/**
+* int findMemoryLocation(struct symlist * head, char * key)
+*
+* finds the memory location stored in the table
+* 
+* @param head: head of list
+* @param key: head of list
+*
+**/
 int findMemoryLocation(struct symlist * head, char * key);
+
+//void symTable(struct symhash * table);
+
 #endif
 
 
