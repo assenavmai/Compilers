@@ -51,6 +51,7 @@ int genCmpdOffset(struct TreeNode * tree) {
 
 	return offset;
 }
+
 void genPrelude() {
 	emitComment("Standard prelude: ");
 	emitRM("LD", gp, 0, ac, "load gp with maxaddress");

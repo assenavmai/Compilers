@@ -35,12 +35,26 @@ This program requires:
     * yacc
     * gcc
 
+The Uthash and Utlist library was used created by Troy D. Hanson for the implementation for the hash table and linked list. There are no extra flags to run this program, utlist.h and uthash.h are all that is needed for this.
+
+You can find the documentation page here: https://troydhanson.github.io/uthash/
+
 BUILD & RUN
 ------------
 
     1) type 'make' to compile the program
+
+    Options:
     2) type ./cm -a [filename].cm to compile a CMinus program and output it's contents into an '.abs' file
-    3) The abstract syntax tree can be printed out onto stdout if the STDOUT flag is changed within main.
+    	The abstract syntax tree can be printed out onto stdout if the STDOUT flag is changed within main.
+    3) type ./cm -s [filename].cm to compile a CMinus program and output it's contents into an '.sym' file
+    	The symbol table can be printined out to stdout if the STDOUT flag is changed within main.
+    4) type ./cm -c [filename].cm to compile a CMinus program and output it's contents into an '.tm' file
+    	The contents can then be run within the TM simulator
+
+    	To do this:
+    		Run ./tm [filename].tm where the file is the file that was generated. You can then follow the options within the simulator to run the program.
+
 
 TESTING
 ----------
@@ -58,7 +72,12 @@ Test files are provided to run the program. These files include:
 		* additonal unknown symbols found in the code (line 16, 22, 32)
 		* unknown function type (line 24)
 		* incorrect addition operators (line 31)
+	* 6.cm:
+	* 7.cm:
+	* 8.cm:
+	* 9.cm:
+	* 10.cm:
 
-To test these files simply compile with 'make' and run with ./cm -a [1,2,3,4,5].cm
-A corresponding [1,2,3,4,5].abs file will be produced.
+To test these files simply compile with 'make' and run with ./cm -a [1,2,3,4,5,6,7,8,9,10].cm
+A corresponding [1,2,3,4,5,6,7,8,9,10].abs file will be produced.
 
