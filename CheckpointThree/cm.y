@@ -12,7 +12,7 @@
     #include "util.h"
     #include "scan.h"
     #include "parse.h"
-    #include "symhash.h"
+    #include "symlist.h"
 
     #define YYSTYPE tokenTypes
 
@@ -20,12 +20,23 @@
     static struct TreeNode * syntaxTree; /* save the syntax tree to be returned */
     static char * savedName; /* for use in assignments */
     static int savedLineNo;  /* ditto */
-    static int scopeLevel = 0;
-    struct symlist * temp, *tempOne, *tempTwo;
-    struct symlist * templist;
-    static int returnValue = -1;
+    static int lineFunc;
+    struct symhash * checkOne, *checkTwo;
     static int invalidVoid = -1;
-    static int rep = 0;
+    static int returnValue = -1;
+    static int varLoc = 0;
+    static int amountParam = 0;
+    static int amountArgs = 0;
+
+    struct symlist * tempHead;
+    enum StmtKind stmtCheck = -1;
+    int inScope = -1;
+
+    static int ofpLocation = 0;
+    static int initLocation = -2;
+    static int declOffset = 0;
+
+    extern yychar;
 
     typedef union tokenTypes
     {
@@ -36,9 +47,12 @@
     }tokenTypes;
 
 
-    void yyerror(char *str)
+    void yyerror()
     {
-            fprintf(stderr,"Line #%d: %s\t",lineno, str);
+           //fprintf(stderr,"line %d: error: \t",lineno);
+            fprintf(stderr, "\nline %d: syntax error at: current token: \t%s\n", lineno, currLine);
+            //printToken(yychar, tokenString);
+
     }
 
     int yywrap()
@@ -63,21 +77,18 @@
 %token PLUS MINUS MULT DIV LT GT LTEQ GTEQ DOUBEQ NEQ EQ SEMI COMMA LPAREN RPAREN LBRAC RBRAC LCURL RCURL 
 %token ERROR
 
-%nonassoc LT GT LTEQ GTEQ
+%nonassoc LT GT LTEQ GTEQ NEQ DOUBEQ
 %nonassoc NO_ELSE
 %nonassoc ELSE
 %left PLUS MINUS
 %left MULT DIV
-
-
+%right EQ
 
 %% /* Grammar for C- */
 
 
 program         : decl_list
-                    { syntaxTree = $1.tnode; 
-                        fprintf(listing, "Leaving global...\n");
-                    } //root of tree
+                    { syntaxTree = $1.tnode; } //root of tree
                 ;
 
 decl_list       : decl_list decl
@@ -119,104 +130,102 @@ var_decl        : type_spec ID {    savedName = copyString(idString);
                         $$.tnode->name = savedName;
                         $$.tnode->etype = $1.type;
                         $$.tnode->pos = savedLineNo;
+                        $$.tnode->memoryLocation = ++varLoc;
+                        printf("var decl param %s %d\n", savedName,$$.tnode->memoryLocation);
 
-                        //insert
-                        temp = lookup(ht, savedName);
-                        if(temp != NULL && temp->scopelvl == scopeLevel && temp->isDeleted == 0)
+                        if(searchList(globalList, savedName))
                         {
                             fprintf(stderr, "line: %d: error: '%s' is previously declared\n", savedLineNo, savedName);
                         }
                         else
                         {
-                            insert(ht, savedName, $1.type, 0, savedLineNo, scopeLevel);
-                            templist = addFront(templist, initNode(savedName, $1.type, 0, savedLineNo, scopeLevel));
-                            
-                            // checking if type void
-                            /*if($1.type == 0)
-                            {
-                                fprintf(stderr, "line: %d error: '%s' cannot be of type void\n", savedLineNo, savedName);
-                            }*/
+                            globalList->table = addToTable(globalList->table, savedName, $1.type, 0, savedLineNo, $$.tnode->memoryLocation);
+                            stack->table = addToTable(stack->table, savedName, $1.type, 0, savedLineNo, $$.tnode->memoryLocation);
                         }
-
                     }
                 | type_spec ID {    savedName = copyString(idString); 
                                     savedLineNo = lineno; } 
                     LBRAC NUM RBRAC SEMI
                     { 
                         $$.tnode = newDeclNode(VarK);
-                        $$.tnode->val = atoi(numString);
                         $$.tnode->name = savedName;
-                        $$.tnode->etype = $1.type;
-                        $$.tnode->isArray = 1;
-
+                        $$.tnode->etype = Array;
+                        $$.tnode->val = atoi(numString);
                         $$.tnode->pos = savedLineNo;
+                        $$.tnode->memoryLocation = ++varLoc;
 
-                        // insert
-                        temp = lookup(ht, savedName);
-                        if(temp != NULL && scopeLevel == temp->scopelvl && temp->isDeleted == 0)
+                        if($$.tnode->val < 0)
                         {
-                            fprintf(stderr, "line %d: error: '%s' is previously declared\n", savedLineNo, savedName);
+                            fprintf(stderr, "line: %d: error: array %s has a index which is out of bounds\n", savedLineNo, savedName);
+                        }
+
+                        if(lookup(globalList->table, savedName))
+                        {
+                            fprintf(stderr, "line: %d: error: '%s' is previously declared\n", savedLineNo, savedName);
                         }
                         else
                         {
-                            insert(ht, savedName, Array, $$.tnode->val, savedLineNo, scopeLevel);
-                            templist = addFront(templist, initNode(savedName, $1.type, $$.tnode->val, savedLineNo, scopeLevel));
+                            globalList->table = addToTable(globalList->table, savedName, Array, $$.tnode->val, savedLineNo, $$.tnode->memoryLocation);
+                            stack->table = addToTable(stack->table, savedName, $1.type, 0, savedLineNo, $$.tnode->memoryLocation);
                         }
                     }
+              //  | error SEMI {  yyerrok; yyclearin; fprintf(stderr, "\tVariable declaration is invalid\n");}
                 ;
 
 type_spec       : INT 
                     { $$.type = Integer; }
                 | VOID
                     { $$.type = Void; }
+              //  | error { yyerrok; yyclearin; fprintf(stderr, "\t Invalid type specifier\n"); }
                 ;
 
 fun_decl        : type_spec ID { $$.str = copyString(idString);
-                                savedLineNo = lineno; } 
+                                lineFunc = lineno; } 
                     LPAREN params RPAREN compound_stmt
                     {
                         $$.tnode = newDeclNode(FunK);
+
                         $$.tnode->name = $3.str;
                         $$.tnode->etype = $1.type;
-                        $$.tnode->pos = savedLineNo;
+                        $$.tnode->pos = lineFunc;
                         $$.tnode->child[0] = $5.tnode;
                         $$.tnode->child[1] = $7.tnode;
-                        scopeLevel--;
+                        $$.tnode->params = amountParam;
+                        $$.tnode->memoryLocation = ++varLoc + 1;
 
-                        //insert
-                        temp = lookup(ht, $3.str);
-                        if(temp != NULL && scopeLevel == temp->scopelvl && temp->isDeleted == 0)
+                        printf("func decl location %d\n", varLoc);
+
+                        if(lookup(globalList->table, $3.str))
                         {
                             fprintf(stderr, "line: %d: error: '%s' is previously declared\n", savedLineNo, $3.str);
                         }
                         else
                         {
-                            insert(ht, $3.str, $1.type, 0, savedLineNo, 0);
-                            templist = addFront(templist, initNode($3.str, $1.type, 0, savedLineNo, scopeLevel));
+                            globalList->table = addToTable(globalList->table, $3.str, $1.type, 0, lineFunc, $$.tnode->memoryLocation);
+                            stack->table = addToTable(stack->table, $3.str, $1.type, 0, lineFunc, $$.tnode->memoryLocation);
                         }
 
                         if(returnValue == 1 && $1.type == 0)
                         {
                             fprintf(stderr, "line: %d: error: void function '%s' cannot have a return of a value\n", savedLineNo, $3.str);
                         }
-
-
+                        else if(returnValue != 1 && $1.type == 1)
+                        {
+                            fprintf(stderr, "line: %d: error: int function '%s' needs to have a return value\n", savedLineNo, $3.str);
+                        }
                         returnValue = -1;
-                        printSymbolTable(ht, templist, rep);
-                        destroyList(templist);
-                        destroyTable(ht);
-                        templist = createList();
-                        rep = 0;
+                        //printSymbolTable(globalList);
+                        //globalList = deleteNode(globalList);
 
-                        //printTable(ht);
+
                     }
-                | LPAREN error RPAREN compound_stmt { fprintf(stderr, "Error in function declaration statement\n"); }  
+                    | LPAREN error RPAREN compound_stmt { fprintf(stderr, "Error in function declaration statement\n"); } 
                 ;
 
 params          : param_list
                     { $$.tnode = $1.tnode; } 
                 | VOID
-                    { }
+                    {}
                 ;
 
 param_list      : param_list COMMA param
@@ -239,67 +248,82 @@ param_list      : param_list COMMA param
                             $$.tnode = $3.tnode;
                         }
 
+                         amountParam++;
+
                     }
                 | param
-                    { $$.tnode = $1.tnode; }
-                | error { fprintf(stderr, "Error in declaration (parameter list) statement\n");}
+                    {  amountParam++; $$.tnode = $1.tnode; }
+                | error  { yyerrok; yyclearin; fprintf(stderr, "\tError in the parameter list:\n");} 
                 ;
 
 param           : type_spec ID 
                     {
+                        varLoc = amountParam + 1;
+                        printf("param %d\n", varLoc);
                         $$.tnode = newDeclNode(ParamK);
                         $$.tnode->pos = lineno;
                         $$.tnode->name = copyString(idString);
                         $$.tnode->etype = $1.type;
+                        $$.tnode->memoryLocation = varLoc;
 
-                        // insert
-                        temp = lookup(ht, idString);
-                        if(temp != NULL && scopeLevel == temp->scopelvl && temp->isDeleted == 0)
+                        printf("%d memLoc param\n", $$.tnode->memoryLocation);
+
+                        if(lookup(globalList->table, idString))
                         {
-                            fprintf(stderr, "line %d: error: '%s' is previously declared\n", lineno, idString);
+                            fprintf(stderr, "line: %d: error: '%s' is previously declared\n", lineno, idString);
                         }
                         else
                         {
-                            if(idString == NULL)
-                            {
-                                printf("hello\n");
-                            }
-                            insert(ht, idString, $1.type, 0, savedLineNo, scopeLevel);
-                            /*templist = addFront(templist, initNode(idString, $1.type, 0, lineno, scopeLevel));*/
+                            globalList->table = addToTable(globalList->table, idString, $1.type, 0, lineno, varLoc);
+                            stack->table = addToTable(stack->table, idString, $1.type, 0, lineno, varLoc);
                         }
-                        
                     }
                 | type_spec ID {    savedName = copyString(idString);
                                     savedLineNo = lineno; }
                     LBRAC RBRAC
                     {
+                        varLoc = amountParam + 1;
                         $$.tnode = newDeclNode(ParamK);
                         $$.tnode->pos = savedLineNo;
                         $$.tnode->name = savedName;
-                        $$.tnode->etype = $1.type;
+                        $$.tnode->etype = Array;
+                        $$.tnode->memoryLocation = varLoc;
 
-                        // insert
-                        temp = lookup(ht, savedName);
-                        if(temp != NULL && scopeLevel == temp->scopelvl && temp->isDeleted == 0)
+
+                        if(lookup(globalList->table, savedName))
                         {
-                            printf("param 2: %s is previously declared\n", savedName);
+                            fprintf(stderr, "line: %d: error: '%s' is previously declared\n", savedLineNo, savedName);
                         }
                         else
                         {
-                            insert(ht, savedName, Array, 0, savedLineNo, scopeLevel);
-                            templist = addFront(templist, initNode(savedName, $1.type, 0, savedLineNo, scopeLevel));
+                            globalList->table = addToTable(globalList->table, savedName, $1.type, 0, savedLineNo, varLoc);
+                            stack->table = addToTable(stack->table, savedName, $1.type, 0, savedLineNo, varLoc);
                         }
-
                     }
                 ;
 
-compound_stmt   : LCURL {scopeLevel++;} local_decl stmt_list RCURL 
+compound_stmt   : LCURL{
+                            position++;
+                            sPos++;
+                            symtable[position] = createTable();
+                            stackTable[sPos] = createTable();
+
+                            globalList = addToList(globalList, symtable[position]);
+                            stack = addToList(stack, stackTable[sPos]);
+                        } 
+                    local_decl stmt_list RCURL
                     {
                         $$.tnode = newStmtNode(CmpdK);
                         $$.tnode->child[0] = $3.tnode;
-                        $$.tnode->child[1] = $4.tnode; 
+                        $$.tnode->child[1] = $4.tnode;
+
+                        struct symlist * t;
+
+                        globalList = deleteNode(globalList);
+
+                        position--;
                     }
-                | LCURL error RCURL { yyerrok; fprintf(stderr, "Error in compound statement\n"); }
+                | LCURL error RCURL { yyerrok; fprintf(stderr, "Error in compound statement\n"); } 
                 ;
 
 local_decl      : local_decl var_decl
@@ -312,15 +336,15 @@ local_decl      : local_decl var_decl
                         {
                             while(temp->sibling)
                             {
-
                                 temp = temp->sibling;
                             }
                             temp->sibling = $2.tnode;
                             $$.tnode = $1.tnode;
+
                         }
                         else
                         {
-                            $$.tnode = $2.tnode; 
+                            $$.tnode = $2.tnode;
                         }
                     }
                 | epsilon { $$.tnode = NULL; }
@@ -369,11 +393,9 @@ expr_stmt       : expr SEMI
 
 select_stmt     : IF LPAREN expr RPAREN stmt %prec NO_ELSE
                     {
-                        scopeLevel++;
                         $$.tnode = newStmtNode(IfK);
                         $$.tnode->child[0] = $3.tnode;
                         $$.tnode->child[1] = $5.tnode;
-                        scopeLevel--;
 
                         if(invalidVoid == 1)
                         {
@@ -383,30 +405,25 @@ select_stmt     : IF LPAREN expr RPAREN stmt %prec NO_ELSE
                     }
                 | IF LPAREN expr RPAREN stmt ELSE stmt
                     {
-                        scopeLevel++;
                         $$.tnode = newStmtNode(IfK);
                         $$.tnode->child[0] = $3.tnode;
                         $$.tnode->child[1] = $5.tnode;
                         $$.tnode->child[2] = $7.tnode;
-                        scopeLevel--;
 
                         if(invalidVoid == 1)
                         {
-                            fprintf(stderr, "line: %d: error: if statement condition must be of type int\n", lineno);
+                            fprintf(stderr, "line: %d: error: if-else statement condition must be of type int\n", lineno);
                         }
-
                         invalidVoid = -1;
                     }
-                | IF LPAREN error RPAREN { yyerrok; fprintf(stderr, "Error in selection (if) statement\n"); }
+                | IF LPAREN error RPAREN { yyerrok; fprintf(stderr, "Error in selection (if) statement\n"); } 
                 ;
 
 iter_stmt       : WHILE LPAREN expr RPAREN stmt
                     {
-                        scopeLevel++;
                         $$.tnode = newStmtNode(WhileK);
                         $$.tnode->child[0] = $3.tnode;
                         $$.tnode->child[1] = $5.tnode;
-                        scopeLevel--;
 
                         if(invalidVoid == 1)
                         {
@@ -455,28 +472,30 @@ expr            : var EQ expr
 var             : ID
                     { 
                         /* check if undeclared */
-                        temp = lookup(ht, idString);
-                        if(temp == NULL && scopeLevel != temp->scopelvl && temp->isDeleted == 0)
+                        $$.tnode = newExpNode(IdK);
+                        $$.tnode->name = copyString(idString);
+                        $$.tnode->memoryLocation = findMemoryLocation(globalList, savedName);
+
+                        /*int l = findMemoryLocation(globalList, savedName);*/
+                        printf("OK BOYS %s %d\n", idString, $$.tnode->memoryLocation);
+
+                        if(!searchList(globalList, idString))
                         {
+
                             fprintf(stderr, "line: %d: error: '%s' is undeclared\n", lineno, idString);
-                            insert(ht, idString, Undeclared, 0, 0, scopeLevel);
-                            templist = addFront(templist, initNode(savedName, $1.type, 0, savedLineNo, scopeLevel));
-                        } 
-                        else
-                        {
+                            globalList->table = addToTable(globalList->table, idString, Undeclared, 0, lineno, $$.tnode->memoryLocation);
+                            
+                        }
 
-                            scopeLookup(ht,idString,scopeLevel);
-                        } 
+                        // check if the type being used is valid for the variable
+                       // checkOne = lookup(globalList->table, idString);
+                       checkOne = searchList(globalList, idString);
 
-                        tempOne = lookup(ht, idString);
-                        
-                        if(tempOne->type == 0)
+                        if(checkOne->type == 0)
                         {
                             invalidVoid = 1;
                         }
 
-                        $$.tnode = newExpNode(IdK);
-                        $$.tnode->name = copyString(idString);
                     }
                 | ID {  savedName = copyString(idString);
                         savedLineNo = lineno; }
@@ -485,24 +504,33 @@ var             : ID
                         $$.tnode = newExpNode(IdK);
                         $$.tnode->name = savedName;
                         $$.tnode->pos = savedLineNo;
+                        $$.tnode->isArr = 1;
                         $$.tnode->child[0] = $4.tnode;
+                        $$.tnode->memoryLocation = findMemoryLocation(globalList, savedName);
 
-                        // insert
-                        temp = lookup(ht, savedName);
-                        if(temp == NULL && scopeLevel != temp->scopelvl && temp->isDeleted == 0)
+                        if(!searchList(globalList, savedName))
                         {
-                            fprintf(stderr, "var 2 line: %d: error: '%s' is undeclared\n", lineno, idString);
-                            insert(ht, savedName, Undeclared, 0, 0, scopeLevel);
-                            templist = addFront(templist, initNode(savedName, $1.type, 0, savedLineNo, scopeLevel));
+                            fprintf(stderr, "line: %d: error: '%s' is undeclared\n", savedLineNo, savedName);
+                            globalList->table = addToTable(globalList->table, savedName, Undeclared, 0, savedLineNo, -1000);
                         }
 
-                        // check that the index used for an array is of type int
-                        tempOne = lookup(ht, $4.tnode->name);
-                        tempTwo = lookup(ht, savedName);
+                        // check if the index being used for the array is of type int
+                        //checkOne = lookup(globalList->table, $4.tnode->name);
 
-                        if(tempOne->type != 1 && tempOne->scopelvl == tempTwo->scopelvl)
+                        checkOne = searchList(globalList, $4.tnode->name);
+                        if(checkOne->type != 1)
                         {
                             fprintf(stderr, "line: %d: error: array '%s' needs an index of type int\n", savedLineNo, savedName);
+                        }
+
+                        // check if the type being used is valid for the variable
+                       // checkOne = lookup(globalList->table, idString);
+
+                       checkOne = searchList(globalList, idString);
+                        if(checkOne->type == 0)
+                        {
+                            invalidVoid = 1;
+                            //printf("%s is of type void\n", checkOne->key);
                         }
                     }
                 ;
@@ -516,6 +544,7 @@ simple_expr     : additive_expr relop additive_expr
                     }
                 | additive_expr
                     { $$.tnode = $1.tnode; }
+
                 ;
 
 relop           : LTEQ
@@ -579,6 +608,7 @@ factor          : LPAREN expr RPAREN
                         $$.tnode = newExpNode(ConstK);
                         $$.tnode->val = atoi(numString);
                     }
+
                 ;
 
 call            : ID {  savedName = copyString(idString);
@@ -589,6 +619,17 @@ call            : ID {  savedName = copyString(idString);
                         $$.tnode->name = savedName;
                         $$.tnode->child[0] = $4.tnode;
                         $$.tnode->pos = savedLineNo;
+                        printf("Call %s\n", savedName);
+
+                        // check arguments match with amount of parameters for function
+                        // add input and output to sym table
+                        // check is $$..params = args, if not error msg
+                        if(strcmp(savedName, "output") == 0)
+                        {
+                            
+                        }
+                        printf("amount args %s %d params %d\n", savedName, amountArgs, amountParam);
+
                     }
                 ;
 
@@ -616,11 +657,13 @@ arg_list        : arg_list COMMA expr
                         {
                             $$.tnode = $3.tnode;
                         }
+
+                        amountArgs++;
                     }
                 | expr
-                    { $$.tnode = $1.tnode; }
+                    { amountArgs++; $$.tnode = $1.tnode; }
                 ;
 
-epsilon         : ;                         
+epsilon         : ;                    
 %%
 

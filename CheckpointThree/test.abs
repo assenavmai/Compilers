@@ -1,0 +1,12 @@
+
+Syntax tree:
+    Function: void main()
+        Compound:
+            Var: int x
+            Var: void y
+            If
+                Id: x
+                Compound:
+                    Assign operation: =
+                        Id: x
+                        Const: 2

@@ -10,14 +10,18 @@
 #include "util.h"
 #include "scan.h"
 #include "parse.h"
-#include "symhash.h"
-
+#include "symlist.h"
+#include "codegen.h"
 
 /* allocate global variables */
 int lineno = 0;
+int position = 0;
+int sPos = 0;
 FILE * source;
 FILE * listing;
 FILE * code;
+
+int TraceCode = TRUE;
 
 int main(int argc, char const *argv[])
 {
@@ -28,14 +32,19 @@ int main(int argc, char const *argv[])
 	char ch;
 	int i = 0;
 	int j = 0;
-	enum ExpType t;
 
-	ht = createTable();
-	templist = createList();
+	//symtable = createTable();
+	globalList = createList();
+	symtable[position] = createTable();
+	stackTable[sPos] = createTable();
+	globalList = addToList(globalList, symtable[position]);
+	stack = addToList(stack, stackTable[sPos]);
+	//globalList->table = addToTable(globalList->table, "output", Void, )
+
 
 	if(argc < 3)
 	{
-		fprintf(stderr,"usage: %s [-a]|[-s] <filename>\n",argv[0]);
+		fprintf(stderr,"usage: %s [-a] <filename>\n",argv[0]);
 		exit(1);
 	}
 
@@ -109,9 +118,6 @@ int main(int argc, char const *argv[])
 		
 		#if STDOUT
 			listing = stdout;
-            fprintf(listing, "Enter global:\n");
-
-
 		#else
 		    listing = fopen(outFile, "w");	// file with abstract syntax tree
 			if(!listing)
@@ -119,15 +125,38 @@ int main(int argc, char const *argv[])
 				fprintf(stderr, "Error: File %s not found\n", outFile);
 				exit(1);
 			}
-            fprintf(listing, "Enter global:\n");
 
 		#endif
 
 		tree = parse();
-
-		//fprintf(listing,"\nSyntax tree:\n");
-		//printTree(tree);
+		symTable(globalList->table);
 	}
-    //printTable(ht);
+	else if(strcmp(argv[1], "-c") == 0) // tm compilation
+	{
+		strcat(outFile, ".tm");
+
+		source = fopen(sourceFilename, "r"); // file with the code
+
+		if(!source)
+		{
+			fprintf(stderr, "Error: File %s not found\n", sourceFilename);
+			exit(1);
+		}
+		
+		    code = fopen(outFile, "w");	// file with abstract syntax tree
+			if(!code)
+			{
+				fprintf(stderr, "Error: File %s not found\n", outFile);
+				exit(1);
+			}
+
+		tree = parse();
+		listing = stdout;
+		printSymbolTable(stack);
+		codeGeneration(tree, outFile);
+
+
+	}
+	
 	return 0;
 }

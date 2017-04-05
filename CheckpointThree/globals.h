@@ -18,8 +18,6 @@
 #endif
 
 #define MAXCHILDREN 3 /* max amount of children the root can have */
-#define ANSI_COLOR_RED     "\x1b[31m"
-#define ANSI_COLOR_RESET   "\x1b[0m"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -31,14 +29,18 @@ extern FILE* source; /* source code text file */
 extern FILE* listing; /* listing output text file */
 extern FILE* code; /* code text file for TM simulator */
 extern int lineno; /* source line number for listing */
+extern int position;
+extern int sPos;
 
 /* The type of statements for the CMinus language */
-enum NodeKind { StmtKind, ExpKind, DeclKind };
+enum NodeKind { StmtKind, ExpKind, DeclKind, Err };
 enum StmtKind { IfK, ReturnK, WhileK, CmpdK, AssignK, CallK };
 enum ExpKind  { OpK, ConstK, IdK};
 enum DeclKind { VarK, FunK, ParamK };
 
 enum ExpType {Void,Integer, Array, Undeclared};  /* Type specifiers */
+
+enum Scope {Global, Local, Param, Predefined};
 
 struct TreeNode {
 
@@ -48,25 +50,20 @@ struct TreeNode {
 	int pos;
 	int op;
 	int val;
+	int isArr;
+	int memoryLocation;
+	int offset;
+	int params;
 	char * name;
 	enum NodeKind nodeKind;
 	enum ExpType etype;
-	int isArray;
-	
+	enum Scope scope;
+
 	union {
 		enum StmtKind stmt;
 		enum ExpKind exp;
 		enum DeclKind dec;
 	}kind;
-
-	//causes segfaults
-	/*union {
-		int op;
-		int val;
-		char * name;
-	}attr;*/
-
-	// enum TypeSpec type; 
 
 };
 

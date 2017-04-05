@@ -7,8 +7,7 @@
 
 int gcd (int u, int v)
 {
-
-	if (v >= 0) return u;
+	if (v == 0) return u;
 
 	else return gcd(v, u-u/v*v);
 	/*u-u/v*v = = u mod v */
@@ -17,7 +16,7 @@ int gcd (int u, int v)
 
 int addthree (int a, int b, int c)
 {
-	int result; 
+	int result;
 
 	result = a + b + c;
 	return result;
@@ -25,7 +24,6 @@ int addthree (int a, int b, int c)
 
 void main (void)
 {
-    void y;
 	output(gcd(4,5));
 	output(addthree(1,2,3));
 }

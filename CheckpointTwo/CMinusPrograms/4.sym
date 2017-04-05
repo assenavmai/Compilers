@@ -1,0 +1,12 @@
+Enter global:
+    Enter func:
+            void z
+            int y
+            int x
+    Leaving scope
+Enter addthree:
+int result
+Leaving scope
+Enter main:
+Leaving scope
+Leaving global...

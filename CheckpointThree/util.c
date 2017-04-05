@@ -7,7 +7,6 @@
 *************************************************/
 #include "globals.h"
 #include "util.h"
-#include "symhash.h"
 #include "y.tab.h"
 
 
@@ -33,7 +32,6 @@ struct TreeNode * newDeclNode(enum DeclKind dec) {
 		node->nodeKind = DeclKind;
 		node->kind.dec = dec;
 		node->pos = lineno;
-		node->isArray = 0;
 	}
 
 	return node;
@@ -87,6 +85,31 @@ struct TreeNode * newStmtNode(enum StmtKind stmt) {
 		node->sibling = NULL;
 		node->nodeKind = StmtKind;
 		node->kind.stmt = stmt;
+		node->pos = lineno;
+	}
+
+	return node;
+}
+
+struct TreeNode * newErrorNode() {
+
+	struct TreeNode * node = (struct TreeNode *)malloc(sizeof(struct TreeNode));
+
+	int i;
+
+	if(!node)
+	{
+		fprintf(listing, "error: Out of memory at line %d\n", lineno);
+	}
+	else
+	{
+		for(i = 0; i < MAXCHILDREN; i++)
+		{
+			node->child[i] = NULL;
+		}
+
+		node->sibling = NULL;
+		node->nodeKind = Err;
 		node->pos = lineno;
 	}
 
@@ -178,9 +201,6 @@ void printToken(int token, const char* tokenString)
   }
 }
 
-
-
-
 // used by printTree to store current number of spaces to indent
 static indentno = 0;
 
@@ -258,7 +278,7 @@ void printTree(struct TreeNode * tree)
 			switch(tree->kind.dec)
 			{
 				case VarK:
-					if(tree->isArray == 1)
+					if(tree->etype == Array)
 					{
 						fprintf(listing, "int %s[%d]\n", tree->name, tree->val);
 					}
@@ -266,10 +286,7 @@ void printTree(struct TreeNode * tree)
 					{
 						fprintf(listing, "Var: ");
 						printTypeSpec(tree->etype);
-						if(tree->name)
-						{
-							fprintf(listing, "%s\n", tree->name);
-						}
+						fprintf(listing, "%s\n", tree->name);
 					}
 					break;
 				case FunK:
@@ -302,104 +319,88 @@ void printTree(struct TreeNode * tree)
 	UNINDENT;
 }
 
-void printSymbolTable(struct symhash * tb, struct symlist * list, int rep) {
+void symTable(struct symhash * table) {
 
-	int i;
-	struct symlist * find;
+	struct symhash * t;
 
-	if(!list)
+	if(!table)
 	{
-		UNINDENT;
-	}
-
-	INDENT;
-	printSpaces();
-
-	if(!list)
-	{
-		fprintf(listing, "Leaving scope\n");
-		INDENT;
+		printf("Table is empty\n");
 		return;
 	}
 
-	if(rep == 0)
+	for(t = table; t != NULL; t = (struct symhash *)(t->hh.next))
 	{
-		if(list->key)
-		{
-			fprintf(listing, "Enter %s:\n", list->key);
-		}
-		rep++;
+		fprintf(listing, "%3s\t\t", t->key);
+		printTypeSpec(t->type);
+		fprintf(listing, "\t\t%5d\t\t%5d\t\t%5d\n", t->lineno, t->token, t->memLocation);
 	}
-	else
+}
+
+void printSymbolTable(struct symlist * head) {
+
+	struct symlist * temp;
+
+	fprintf(listing, "Name\t\tType\t\tLine\t\tValue\t\tLocation\n");
+
+	LL_FOREACH(head, temp)
 	{
-		UNINDENT;
-		printSpaces();
-		printTypeSpec(list->type);
+		symTable(temp->table);
+	}
+}
 
-		find = lookup(ht, list->key);
+int findMemoryLocation(struct symlist * head, char * key) {
 
-		if(find->type == Array)
+	struct symlist * l, *temp;
+	struct symhash * t;
+	int flag = 0;
+
+	LL_FOREACH(head, l)
+	{
+		HASH_FIND_STR(l->table, key, t);
+		
+		if(t)
 		{
-			if(list->token == 0)
-			{
-				fprintf(listing, "%s[]\n", list->key);
-			}
-			else
-			{
-				fprintf(listing, "%s[%d]\n", list->key,list->token);
-			}
-		}
-		else
-		{
-			fprintf(listing, "%s\n", list->key);
+			printf("%s is declared\n", key);
+			return t->memLocation;
 		}
 	}
 
-	//printf("\t\t\tll key: %s type: %d token: %d lineno: %d\n", list->key, list->type, list->token, list->lineno);
-	printSymbolTable(tb, list->next, rep);
-	
-
-	UNINDENT;
+	return -5000;
 }
 
 
-struct symlist * scopeLookup(struct symhash * tb, char * key, int scopelvl) {
+void addIOFunctions() {
 
-	struct symlist * list;
-	int index = 0;
-	int scope = scopelvl;
+	struct TreeNode * funcDecl, *cmpdStmt;
 
-	if(!key)
-	{
-		return NULL;
-	}
-	index = hash(key);
+	// input function
+	funcDecl = newDeclNode(FunK);
+	funcDecl->name = "input";
+	funcDecl->etype = Integer;
+	funcDecl->scope = Predefined;
+	funcDecl->pos = 0;
+	funcDecl->child[0] = NULL; // no parameters
 
-	list = tb->table[index];
+	cmpdStmt = newStmtNode(CmpdK);
+	cmpdStmt->child[0] = NULL;
+	cmpdStmt->child[1] = NULL;
 
-	if(!list)
-	{
-		return NULL;
-	}
+	funcDecl->child[0] = cmpdStmt;
 
-	while (scope >= 0)
-	{
-		while(list)
-		{
-			//printf("ScopeLookup current scope: %d\n", scope);
-			if(strcmp(key, list->key) == 0 && list->scopelvl == scope)
-			{
-				//printf("Match found at scope %d for key: %s\n",scope, key);
-				return list;
-			}
+	globalList->table = addToTable(globalList->table, "input", Integer, 0, -1, 0);
 
-			list = list->next;
-		}
-		scope--;
-		list = tb->table[index];
-	}
-	
+	// output function
+	funcDecl = newDeclNode(FunK);
+	funcDecl->name = "output";
+	funcDecl->etype = Void;
+	funcDecl->scope = Predefined;
+	funcDecl->pos = 0;
+	funcDecl->child[0] = NULL; // no parameters
 
-	return NULL;
+	cmpdStmt = newStmtNode(CmpdK);
+	cmpdStmt->child[0] = NULL;
+	cmpdStmt->child[1] = NULL;
 
+	funcDecl->child[1] = cmpdStmt;
 }

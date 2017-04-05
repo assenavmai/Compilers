@@ -11,13 +11,17 @@
 
 /* MAXTOKENLEN is the maximum size of a token */
 #define MAXTOKENLEN 40
+#define MAXARRLEN 512
 
 /* tokenString array stores the lexeme of each token */
 extern char tokenString[MAXTOKENLEN+1];
 extern char idString[MAXTOKENLEN+1];
 extern char numString[MAXTOKENLEN+1];
-extern struct symhash * ht;
-extern struct symlist * templist;
+extern char currLine[256];
+extern struct symlist * globalList;
+extern struct symlist * stack;
+extern struct symhash * symtable[MAXARRLEN];
+extern struct symhash * stackTable[MAXARRLEN];
 
 
 

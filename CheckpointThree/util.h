@@ -9,7 +9,6 @@
 #define _UTIL_H_
 
 #include "symlist.h"
-
 /**
 * [FUNCTION PROTOTYPE]
 * Used in: [list files]
@@ -96,6 +95,16 @@ struct TreeNode * newExpNode(enum ExpKind exp);
 struct TreeNode * newStmtNode(enum StmtKind stmt);
 
 /**
+* struct TreeNode * newErrorNode()
+* Used in: util.c
+*
+* Creates a new node for a errors
+*
+* @return the node containing the error information
+**/
+struct TreeNode * newErrorNode();
+
+/**
 * void printTree( struct TreeNode * tree )
 * Used in: util.c
 *
@@ -130,11 +139,13 @@ char * copyString(char  * str);
 **/
 void panicMode();
 
-void preOrder(struct TreeNode * tree);
-void typeCheck(struct TreeNode * tree);
+void printErrorMessages(int typeOfErr);
 
-struct symlist * scopeLookup(struct symhash * tb, char * key, int scopelvl);
-void printSymbolTable(struct symhash * tb, struct symlist * list, int rep);
+void printSymbolTable(struct symlist * head);
+
+void symTable(struct symhash * table);
+
+int findMemoryLocation(struct symlist * head, char * key);
 #endif
 
 

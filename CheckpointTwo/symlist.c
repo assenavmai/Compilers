@@ -9,13 +9,19 @@ struct symlist * createList() {
 	return head;
 }
 
-struct symlist * initNode(char * key, enum ExpType type, int token, int lineno) {
+struct symlist * initNode(char * key, enum ExpType type, int token, int lineno, int scopelvl) {
 
 	struct symlist * node = malloc(sizeof(struct symlist));
 
 	if(!node)
 	{
-		fprintf(stderr, "Out of memory error\n");
+		fprintf(stderr, "1 Out of memory error\n");
+		return NULL;
+	}
+
+	if(!key)
+	{
+		fprintf(stderr, "2 Out of memory error\n");
 		return NULL;
 	}
 
@@ -23,6 +29,8 @@ struct symlist * initNode(char * key, enum ExpType type, int token, int lineno) 
 	node->type = type;
 	node->token = token;
 	node->lineno = lineno;
+	node->scopelvl = scopelvl;
+	node->isDeleted = 0;
 	node->next = NULL;
 
 	return node;

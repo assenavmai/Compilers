@@ -42,14 +42,14 @@ struct symhash * createTable() {
 	tb->size = MAXSIZE;
 }
 
-void insert(struct symhash * tb, char * key, enum ExpType type, int token, int lineno) {
+void insert(struct symhash * tb, char * key, enum ExpType type, int token, int lineno, int scopelvl) {
 
 	struct symlist * list = NULL;
 	int index = 0;
 
 	index = hash(key);
 
-	list = addFront(list, initNode(key, type, token, lineno));
+	list = addFront(list, initNode(key, type, token, lineno, scopelvl));
 	list->next = tb->table[index];
 	tb->table[index] = list;
 
@@ -60,7 +60,7 @@ void printTable(struct symhash * tb) {
 	struct symlist* list, *temp, *node;
 	int i;
 
-	printf("Name\t\tType\t\tValue\t\tLine No.\n");
+	printf("Name\t\tType\t\tValue\t\tLine\t\tScope\n");
 	for(i = 0; i < MAXSIZE; i++)
 	{
 		list = tb->table[i];
@@ -71,7 +71,48 @@ void printTable(struct symhash * tb) {
 			node = list;
 			if(node->type != Undeclared)
 			{
-				printf("%s\t\t%d\t\t%d\t\t%d\n", node->key, node->type, node->token, node->lineno);
+				printf("%s\t\t%d\t\t%d\t\t%d\t\t%d\n", node->key, node->type, node->token, node->lineno, node->scopelvl);
+			}
+			list = list->next;
+		}
+		list = temp;
+	}
+}
+
+void deleteValue(struct symhash *tb, char * key) {
+	
+	struct symlist * ptr;
+
+	ptr = lookup(tb, key);
+
+	if(!ptr)
+	{
+		return;
+	}
+	else
+	{
+		ptr->isDeleted = 1;
+	}
+}
+
+void destroyTable(struct symhash *tb) {
+
+		struct symlist* list, *temp, *node;
+	int i;
+
+	//printf("Name\t\tType\t\tValue\t\tLine\t\tScope\n");
+	for(i = 0; i < MAXSIZE; i++)
+	{
+		list = tb->table[i];
+		temp = list;
+
+		while(list)
+		{
+			node = list;
+			if(node->type != Undeclared)
+			{
+				node->isDeleted = 1;
+				//printf("%s\t\t%d\t\t%d\t\t%d\t\t%d\n", node->key, node->type, node->token, node->lineno, node->scopelvl);
 			}
 			list = list->next;
 		}
@@ -86,7 +127,7 @@ struct symlist * lookup(struct symhash *tb, char * key) {
 
 	if(!key)
 	{
-		return;
+		return NULL;
 	}
 	index = hash(key);
 

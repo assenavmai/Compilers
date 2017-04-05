@@ -1,0 +1,11 @@
+Enter global:
+    Enter gcd:
+            int a[2]
+    Leaving scope
+    Enter addthree:
+            int result
+    Leaving scope
+    Enter main:
+            void y
+    Leaving scope
+Leaving global...

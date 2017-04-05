@@ -1,34 +1,35 @@
 /*****************************
 * File: 4.cm
 * Errors in file:
-	* incorrect return statement (line 27)
-	* incorrect if-else statment (line 15)
-	* incorrect call statement (line 33)
+	* return type is int instead of void for function addthree (line 27)
+	* test condition for an if-statement is a void type instead of an int type (line 15)
+	* 
 
 * Compiler is testing against these errors:
-	* syntactic error for return statement
-	* syntactic error for if statement
-	* syntactic error for call
+	* function declaration and return expression don't match
+	* test condition for if-statement must be an integer value
+	* 
 *******************************/
-int gcd (int u, int v)
-{
-	if ( == 0) return u;
 
-	else return gcd(v, u-u/v*v);
-	/*u-u/v*v = = u mod v */
+int func(int fff) {
+	int x; int y; void z;
 
+	x = x * 2 + 1;
+	y = x + x;
+
+	x = z - y*z/y;
 }
 
-int addthree (int a, int b, int c)
+void addthree (int a, int b, int c)
 {
 	int result;
 
 	result = a + b + c;
-	return r3sult;
+	return result;
 }
 
 void main (void)
 {
 	output(gcd(4,5));
-	output(addthree(1,2,));
+	output(addthree(1,2,3));
 }

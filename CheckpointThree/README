@@ -18,12 +18,6 @@ INTRODUCTION
 
 This projects is checkpoint 1 of 3 for our fourth year compilers class, CIS*4650. For this checkpoint, we have to create a scanner and parser to the CMinus specification. After building these two components, a syntax tree is built and sent to stdout.
 
-This program is now updated to have features included for checkpoint 2 such as:
-	* symbol table
-	* typecheking.
-
-The symbol table is sent to a '.sym' file using this -s flaf.
-
 
 VERSION CONTROL
 ----------------
@@ -45,10 +39,8 @@ BUILD & RUN
 ------------
 
     1) type 'make' to compile the program
-    2) COMMAND LINE OPITONS
-       2a) type ./cm -a [filename].cm to compile a CMinus program and output it's contents into an '.abs' file
-       2b) type ./cm -s [filename].cm to compile a CMinus program and output it's contents into an '.sym' file
-    3) The abstract syntax tree or symbol table can be printed out onto stdout if the STDOUT flag is changed within main.
+    2) type ./cm -a [filename].cm to compile a CMinus program and output it's contents into an '.abs' file
+    3) The abstract syntax tree can be printed out onto stdout if the STDOUT flag is changed within main.
 
 TESTING
 ----------
@@ -56,11 +48,17 @@ TESTING
 Test files are provided to run the program. These files include:
 
 	* 1.cm: No errors in the file.
-	* 2.cm: Errors
-	* 3.cm: Errors
-	* 4.cm: Errors
-	* 5.cm: The sky is the limit
+	* 2.cm: incorrect multiplcation errors and relational errors
+	* 3.cm: unknown function type and unknown symbols
+	* 4.cm: Tests random invalid characters within the file, 
+	* 5.cm: 	
+		* incorrect return statement (line 27)
+		* incorrect if-else statment (line 15)
+		* incorrect call statement (line 36)
+		* additonal unknown symbols found in the code (line 16, 22, 32)
+		* unknown function type (line 24)
+		* incorrect addition operators (line 31)
 
-To test these files simply compile with 'make' and run with ./cm -a or -s [1,2,3,4,5].cm
+To test these files simply compile with 'make' and run with ./cm -a [1,2,3,4,5].cm
 A corresponding [1,2,3,4,5].abs file will be produced.
 
