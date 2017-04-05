@@ -15,6 +15,7 @@ void genExp(struct TreeNode * tree, int isAddress);
 void genPrelude();
 void genFinale();
 void genPredefinedIO();
+int genCmpdOffset(struct TreeNode * tree);
 
 
 #endif

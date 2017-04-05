@@ -9,9 +9,48 @@ static int entry = 0;
 static int numParams = 0;
 static int localOffset = initFO;
 static int inFunction = FALSE;
+static int isReturn = FALSE;
 static char codestr[256];
 
 
+int genCmpdOffset(struct TreeNode * tree) {
+
+	int offset = 0;
+
+	if(tree)
+	{
+		if(tree->nodeKind == DeclKind)
+		{
+			struct TreeNode * temp = tree;
+
+			while(temp)
+			{
+				switch(temp->kind.dec)
+				{
+					case VarK:
+						if(temp->etype == Array)
+						{
+							offset += temp->val;
+						}
+						else
+						{
+							++offset;
+						}
+						break;
+					case ParamK:
+						++offset;
+						break;
+					default:
+						break;
+				}
+
+				temp = temp->sibling;
+			}
+		}
+	}
+
+	return offset;
+}
 void genPrelude() {
 	emitComment("Standard prelude: ");
 	emitRM("LD", gp, 0, ac, "load gp with maxaddress");
@@ -55,7 +94,7 @@ void genFinale() {
 void genStmt(struct TreeNode * tree) {
 
 	struct TreeNode * child1, * child2, *child3;
-	int savedLoc, savedLoc2, savedLoc3;
+	int savedLoc, savedLoc2, savedLoc3, offset;
 	int numArgs = 0;
 	int loc;
 
@@ -107,6 +146,7 @@ void genStmt(struct TreeNode * tree) {
 				break;
 			case ReturnK:
 				printf("\treturn\n");
+				isReturn = TRUE;
 				if(TraceCode)
 				{
 					emitComment("-> return");
@@ -168,11 +208,16 @@ void genStmt(struct TreeNode * tree) {
 				child1 = tree->child[0];
 				child2 = tree->child[1];
 
-				// get offset for local declarations
+				// get offset for local declarations for ch
+				//offset = genCmpdOffset(child1);
+				//localOffset -= offset;
 				cGen(child1);
 
 				// code body
 				cGen(child2);
+
+				//restore offset
+				//localOffset -= offset;
 
 				if(TraceCode)
 				{
@@ -235,14 +280,13 @@ void genStmt(struct TreeNode * tree) {
 
 					child1 = child1->sibling;				
 				}
-					// code for input
-					//emitRO("IN", ac, 0, 0, "");
-				emitRM("ST", fp, localOffset +initFO, fp, "push ofp");
+
+				emitRM("ST", fp, localOffset + ofpFO, fp, "push ofp");
 				emitRM("LDA", fp, localOffset, fp, "push frame");
 				emitRM("LDA", ac, 1, pc, "load ac with ret ptr");
 
 				//loc = -(findMemoryLocation(stack, tree->name));
-				emitRM("LDA", pc, fp, pc, "jump to fun loc");
+				emitRM("LDA", pc, loc, pc, "jump to fun loc");
 				emitRM("LD", fp, ofpFO, fp, "pop frame");
 				//cGen(child1);
 
@@ -331,7 +375,7 @@ void genDecl(struct TreeNode * tree) {
 				--globalOffset;
 
 				// skip body of function and go to the next declaration
-				jmpFuncLoc = emitSkip(1);
+				//jmpFuncLoc = emitSkip(1);
 
 				// skip codegen and come back here for function body
 				funcBodLoc = emitSkip(0);
@@ -340,12 +384,24 @@ void genDecl(struct TreeNode * tree) {
 
 
 				cGen(child2);
+
+				if(isReturn != TRUE)
+    			{
+					emitRM("LD", pc, retFO, fp, "return to caller");
+    			}
+
 				//back patching (11 in fac.tm)
-				/*emitBackup(funcLoc);
+				emitBackup(funcLoc);
 				emitRM("LDA", ac, funcBodLoc, 0, "jump around fn body");
-    			emitRestore();*/
+    			emitRestore();
+
 
 				inFunction = FALSE;
+
+				if(TraceCode)
+				{
+					emitComment("<- fundecl");
+				}
 
 
 				break;
@@ -467,7 +523,7 @@ void genExp(struct TreeNode * tree, int isAddress) {
 
 				cGen(child2);
 
-				emitRM("LD", ac, ++localOffset, fp, "op: Load left");
+				emitRM("LD", ac1, ++localOffset, fp, "op: load left");
 
 				switch(tree->op)
 				{
@@ -477,7 +533,7 @@ void genExp(struct TreeNode * tree, int isAddress) {
 						break;
 					case MINUS:
 						printf("subtract \n");
-						emitRO("MINUS", ac, ac1, ac, "op -");
+						emitRO("SUB", ac, ac1, ac, "op -");
 						break;
 					case MULT:
 						printf("multi \n");
@@ -538,6 +594,11 @@ void genExp(struct TreeNode * tree, int isAddress) {
 					default:
 						printf("bug found \n");
 						emitComment("BUG: Unknown operator");
+				}
+
+				if(TraceCode)
+				{
+					emitComment("<- op");
 				}
 				break;
 			default:
