@@ -129,7 +129,7 @@ int main(int argc, char const *argv[])
 		#endif
 
 		tree = parse();
-		symTable(globalList->table);
+		printSymbolTable(stack);
 	}
 	else if(strcmp(argv[1], "-c") == 0) // tm compilation
 	{

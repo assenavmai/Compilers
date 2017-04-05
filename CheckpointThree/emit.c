@@ -29,6 +29,24 @@ void emitRM(char * opcode, int targetReg, int offset, int base, char * comment) 
 	}
 }
 
+int getInputOffset() {
+
+	int temp;
+
+	temp = -(emitLoc - 3);
+
+	return temp;
+}
+
+int getOutputOffset() {
+
+	int temp;
+
+	temp = -(emitLoc - 6);
+
+	return temp;
+}
+
 void emitRM_Abs(char * opcode, int targetReg, int abs, char * comment) {
 
 	fprintf(code, "%3d:  %5s  %d,%d(%d) ", emitLoc, opcode, targetReg, abs-(emitLoc+1), pc);
