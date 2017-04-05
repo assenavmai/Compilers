@@ -131,12 +131,12 @@
 * <- call
 * <- compound statement
  63:     LD  7,-1(5)	return to caller
- 11:    LDA  0,13(0)	jump around fn body
+ 11:    LDA  7,52(7) 	jump around fn body
 * <- fundecl
  64:     ST  5,-1(5)	push ofp
  65:    LDA  5,-1(5)	push frame
  66:    LDA  0,1(7)	load ac with ret ptr
- 67:    LDA  7,-68(7) 	jump to main loc
+ 67:    LDA  7,-56(7) 	jump to main loc
  68:     LD  5,0(5)	pop frame
 * End of execution.
  69:   HALT  0,0,0	

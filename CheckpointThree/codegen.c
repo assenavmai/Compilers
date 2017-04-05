@@ -85,6 +85,7 @@ void genFinale() {
 	emitRM("ST", fp, globalOffset+ofpFO, fp, "push ofp");
 	emitRM("LDA", fp, globalOffset, fp, "push frame");
 	emitRM("LDA", ac, 1, pc, "load ac with ret ptr");
+	printf("Entry %d\n", entry);
 	emitRM_Abs("LDA", pc, entry, "jump to main loc");
 	emitRM("LD", fp, ofpFO, fp, "pop frame");
 	emitComment("End of execution.");
@@ -277,7 +278,7 @@ void genStmt(struct TreeNode * tree) {
 					}
 
 					emitRM("ST", ac, localOffset + initFO - (numArgs++),fp, "store arg val");	
-
+					printf("\t\t\tnum args %d\n", numArgs);
 					child1 = child1->sibling;				
 				}
 
@@ -382,21 +383,14 @@ void genDecl(struct TreeNode * tree) {
 
 				loc = -(findMemoryLocation(stack, tree->name));
 				printf("LOCATION FUNC: %d\n", loc);
+
 				// load function location
 				funcLoc = emitSkip(1);
 				emitComment("jump around function body here"); 
 				emitRM("ST", ac, retFO, fp, "store return");
 				--globalOffset;
 
-				// skip body of function and go to the next declaration
-				//jmpFuncLoc = emitSkip(1);
-
-				// skip codegen and come back here for function body
-				funcBodLoc = emitSkip(0);
-
 				cGen(child1);
-
-
 				cGen(child2);
 
 				if(isReturn != TRUE)
@@ -404,10 +398,19 @@ void genDecl(struct TreeNode * tree) {
 					emitRM("LD", pc, retFO, fp, "return to caller");
     			}
 
+    			// skip codegen and come back here for function body
+				funcBodLoc = emitSkip(0);
+
+				if(strcmp("main", tree->name) == 0)
+				{
+					entry = funcLoc + 1;
+				}
+
 				//back patching (11 in fac.tm)
 				emitBackup(funcLoc);
-				emitRM("LDA", ac, funcBodLoc, 0, "jump around fn body");
+				emitRM_Abs("LDA", pc, funcBodLoc, "jump around fn body");
     			emitRestore();
+
 
 
 				inFunction = FALSE;
@@ -421,9 +424,9 @@ void genDecl(struct TreeNode * tree) {
 				break;
 			case ParamK:
 				printf("\tparam\n");
-				/*emitComment("param");
+				emitComment("param");
 				--localOffset;
-				++numParams;*/
+				++numParams;
 				break;
 			default:
 				break;
