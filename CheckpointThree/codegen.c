@@ -141,7 +141,7 @@ void genStmt(struct TreeNode * tree) {
 
 				if(TraceCode)
 				{
-					emitComment("<-");
+					emitComment("<- if");
 				}
 				break;
 			case ReturnK:
@@ -276,7 +276,7 @@ void genStmt(struct TreeNode * tree) {
 						genExp(child1, FALSE);
 					}
 
-					emitRM("ST", ac, localOffset + initFO - (numArgs++),fp, "push ofp");	
+					emitRM("ST", ac, localOffset + initFO - (numArgs++),fp, "store arg val");	
 
 					child1 = child1->sibling;				
 				}
@@ -284,6 +284,20 @@ void genStmt(struct TreeNode * tree) {
 				emitRM("ST", fp, localOffset + ofpFO, fp, "push ofp");
 				emitRM("LDA", fp, localOffset, fp, "push frame");
 				emitRM("LDA", ac, 1, pc, "load ac with ret ptr");
+
+				if(strcmp(tree->name, "input") == 0)
+				{
+					loc = getInputOffset();
+				}
+				else if(strcmp(tree->name, "output") == 0)
+				{
+					loc = getOutputOffset();
+				}
+				else
+				{
+					loc = findMemoryLocation(stack, tree->name);
+					printf("location for call %d %s\n", loc, tree->name);
+				}
 
 				//loc = -(findMemoryLocation(stack, tree->name));
 				emitRM("LDA", pc, loc, pc, "jump to fun loc");
@@ -407,6 +421,9 @@ void genDecl(struct TreeNode * tree) {
 				break;
 			case ParamK:
 				printf("\tparam\n");
+				/*emitComment("param");
+				--localOffset;
+				++numParams;*/
 				break;
 			default:
 				break;
@@ -575,7 +592,7 @@ void genExp(struct TreeNode * tree, int isAddress) {
 						emitRM("LDA", pc, 1, pc, "unconditional jmp");
 						emitRM("LDC", ac, 1, ac, "true case");
 						break;
-					case EQ:
+					case DOUBEQ:
 						printf("equals \n");
 						emitRO("SUB", ac, ac1, ac, "op ==");
 						emitRM("JEQ", ac, 2, pc, "br if true");
@@ -592,7 +609,7 @@ void genExp(struct TreeNode * tree, int isAddress) {
 						emitRM("LDC", ac, 1, ac, "true case");
 						break;
 					default:
-						printf("bug found \n");
+						printf("bug found %d\n", tree->op);
 						emitComment("BUG: Unknown operator");
 				}
 

@@ -32,7 +32,7 @@
  15:     ST  5,-5(5)	push ofp
  16:    LDA  5,-5(5)	push frame
  17:    LDA  0,1(7)	load ac with ret ptr
- 18:    LDA  7,0(7)	jump to fun loc
+ 18:    LDA  7,-15(7)	jump to fun loc
  19:     LD  5,0(5)	pop frame
 * <- call
  20:     LD  1,-4(5)	assign: load left
@@ -122,11 +122,11 @@
 * looking up id: fac
  56:     LD  0,-3(5)	load id value
 * <- id
- 57:     ST  0,-6(5)	push ofp
+ 57:     ST  0,-6(5)	store arg val
  58:     ST  5,-4(5)	push ofp
  59:    LDA  5,-4(5)	push frame
  60:    LDA  0,1(7)	load ac with ret ptr
- 61:    LDA  7,0(7)	jump to fun loc
+ 61:    LDA  7,-55(7)	jump to fun loc
  62:     LD  5,0(5)	pop frame
 * <- call
 * <- compound statement

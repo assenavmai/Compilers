@@ -26,4 +26,9 @@ struct symhash * deleteElement(struct symhash * table, char * key);
 void deleteTable(struct symhash * table);
 void printTable(struct symhash * table);
 
+/**
+stack->table = addToTable(stack->table, "input", Integer, 0, -1, 0);
+stack->table = addToTable(stack->table, "input", Integer, 0, -1, 0);
+**/
+
 #endif

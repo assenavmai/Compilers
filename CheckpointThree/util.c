@@ -372,21 +372,23 @@ int findMemoryLocation(struct symlist * head, char * key) {
 
 void addIOFunctions() {
 
-	struct TreeNode * funcDecl, *cmpdStmt;
+	struct TreeNode * funcDecl, *cmpdStmt, * params;
 
 	// input function
 	funcDecl = newDeclNode(FunK);
 	funcDecl->name = "input";
 	funcDecl->etype = Integer;
-	funcDecl->scope = Predefined;
 	funcDecl->pos = 0;
+	funcDecl->params = 0;
+	funcDecl->scope = Predefined;
+	funcDecl->memoryLocation = 0;
 	funcDecl->child[0] = NULL; // no parameters
 
 	cmpdStmt = newStmtNode(CmpdK);
-	cmpdStmt->child[0] = NULL;
-	cmpdStmt->child[1] = NULL;
+	cmpdStmt->child[0] = NULL; // no local variables
+	cmpdStmt->child[1] = NULL; // no statements
 
-	funcDecl->child[0] = cmpdStmt;
+	funcDecl->child[1] = cmpdStmt;
 
 	globalList->table = addToTable(globalList->table, "input", Integer, 0, -1, 0);
 
@@ -394,8 +396,14 @@ void addIOFunctions() {
 	funcDecl = newDeclNode(FunK);
 	funcDecl->name = "output";
 	funcDecl->etype = Void;
-	funcDecl->scope = Predefined;
 	funcDecl->pos = 0;
+	funcDecl->params  = 1;
+	funcDecl->scope = Predefined;
+	funcDecl->memoryLocation = 0;
+
+	params = newDeclNode(ParamK);
+	params->name = "arg";
+
 	funcDecl->child[0] = NULL; // no parameters
 
 	cmpdStmt = newStmtNode(CmpdK);

@@ -1,6 +1,7 @@
 #ifndef _EMIT_H_
 #define _EMIT_H_
 
+
 // program counter
 #define pc 7
 
@@ -23,5 +24,7 @@ void emitRO(char * opcode, int targetReg, int srcReg1, int srcReg2, char * comme
 int emitSkip(int distance);
 void emitBackup(int loc);
 void emitRestore();
+int getInputOffset();
+int getOutputOffset();
 
 #endif

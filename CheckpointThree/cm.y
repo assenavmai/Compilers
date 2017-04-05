@@ -624,10 +624,7 @@ call            : ID {  savedName = copyString(idString);
                         // check arguments match with amount of parameters for function
                         // add input and output to sym table
                         // check is $$..params = args, if not error msg
-                        if(strcmp(savedName, "output") == 0)
-                        {
-                            
-                        }
+                       
                         printf("amount args %s %d params %d\n", savedName, amountArgs, amountParam);
 
                     }
