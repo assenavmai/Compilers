@@ -407,6 +407,8 @@ void genDecl(struct TreeNode * tree) {
 				break;
 			case ParamK:
 				printf("\tparam\n");
+				--localOffset;
+				++numParams;
 				break;
 			default:
 				break;
