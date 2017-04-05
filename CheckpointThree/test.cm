@@ -1,11 +1,29 @@
-int x;
+void pls(void) {
+int x; int y; int z;
+ x = 0;
+ y = 3;
+ z = 2;
+
+/* if(x == 0)
+ {
+ 	if(y == 3)
+ 	{
+ 		output(z);
+
+ 		if(x == 0)
+ 		{
+ 			output(1);
+ 		}
+ 	}
+ }*/
+
+ 	while(y > 0)
+ 	{
+ 		y = y - 1;
+ 		output(y);
+ 	}
+}
 
 void main(void) {
-
-	int x;
-
-	x = 1;
-
-	if(x == 1) x = 2;
-	
+	pls();
 }

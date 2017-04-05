@@ -131,7 +131,7 @@ var_decl        : type_spec ID {    savedName = copyString(idString);
                         $$.tnode->etype = $1.type;
                         $$.tnode->pos = savedLineNo;
                         $$.tnode->memoryLocation = ++varLoc;
-                        printf("var decl param %s %d\n", savedName,$$.tnode->memoryLocation);
+                       // printf("var decl param %s %d\n", savedName,$$.tnode->memoryLocation);
 
                         if(searchList(globalList, savedName))
                         {
@@ -193,7 +193,7 @@ fun_decl        : type_spec ID { $$.str = copyString(idString);
                         $$.tnode->params = amountParam;
                         $$.tnode->memoryLocation = ++varLoc + 1;
 
-                        printf("func decl location %d\n", varLoc);
+                      //  printf("func decl location %d\n", varLoc);
 
                         if(lookup(globalList->table, $3.str))
                         {
@@ -259,7 +259,7 @@ param_list      : param_list COMMA param
 param           : type_spec ID 
                     {
                         varLoc = amountParam + 1;
-                        printf("param %d\n", varLoc);
+                      //  printf("param %d\n", varLoc);
                         $$.tnode = newDeclNode(ParamK);
                         $$.tnode->pos = lineno;
                         $$.tnode->name = copyString(idString);
@@ -619,13 +619,14 @@ call            : ID {  savedName = copyString(idString);
                         $$.tnode->name = savedName;
                         $$.tnode->child[0] = $4.tnode;
                         $$.tnode->pos = savedLineNo;
-                        printf("Call %s\n", savedName);
+                      //  printf("Call %s\n", savedName);
 
                         // check arguments match with amount of parameters for function
                         // add input and output to sym table
                         // check is $$..params = args, if not error msg
+                        //if(amountArgs != )
                        
-                        printf("amount args %s %d params %d\n", savedName, amountArgs, amountParam);
+                      //  printf("amount args %s %d params %d\n", savedName, amountArgs, amountParam);
 
                     }
                 ;
