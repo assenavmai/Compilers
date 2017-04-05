@@ -322,8 +322,7 @@ compound_stmt   : LCURL{
                         globalList = deleteNode(globalList);
 
                         position--;
-                    }
-                | LCURL error RCURL { yyerrok; fprintf(stderr, "Error in compound statement\n"); } 
+                    } 
                 ;
 
 local_decl      : local_decl var_decl
@@ -347,6 +346,7 @@ local_decl      : local_decl var_decl
                             $$.tnode = $2.tnode;
                         }
                     }
+                | error var_decl{ yyerrok; fprintf(stderr, "Error in local declaration\n");}
                 | epsilon { $$.tnode = NULL; }
                 ;
 
@@ -467,6 +467,7 @@ expr            : var EQ expr
                     }
                 | simple_expr
                     { $$.tnode = $1.tnode; }
+                | var EQ error {yyerrok; fprintf(stderr, "Error in expression\n");}
                 ;
 
 var             : ID
@@ -544,7 +545,7 @@ simple_expr     : additive_expr relop additive_expr
                     }
                 | additive_expr
                     { $$.tnode = $1.tnode; }
-
+                | additive_expr relop error {yyerrok; fprintf(stderr, "Error in simple expression\n");}
                 ;
 
 relop           : LTEQ
@@ -570,6 +571,7 @@ additive_expr   : additive_expr addop term
                     }
                 | term
                     { $$.tnode = $1.tnode; }
+                | additive_expr error {yyerrok; fprintf(stderr, "Error in additive expression\n");}
                 ;
 
 addop           : PLUS
@@ -587,6 +589,7 @@ term            : term mulop factor
                     }
                 | factor
                     { $$.tnode = $1.tnode; }
+                | term mulop error {yyerrok; fprintf(stderr, "Error in term\n");}
                 ;
 
 mulop           : MULT
@@ -608,6 +611,7 @@ factor          : LPAREN expr RPAREN
                         $$.tnode = newExpNode(ConstK);
                         $$.tnode->val = atoi(numString);
                     }
+                | LPAREN error {yyerrok; fprintf(stderr, "Error in factor\n");}
 
                 ;
 
@@ -633,6 +637,7 @@ call            : ID {  savedName = copyString(idString);
 args            : arg_list
                     { $$.tnode = $1.tnode; }
                 | epsilon { $$.tnode = NULL; }
+                | error{yyerrok; fprintf(stderr, "Error in arguements\n");}
                 ;
 
 arg_list        : arg_list COMMA expr
@@ -659,6 +664,7 @@ arg_list        : arg_list COMMA expr
                     }
                 | expr
                     { amountArgs++; $$.tnode = $1.tnode; }
+                | arg_list COMMA error {yyerrok; fprintf(stderr, "Error in arguement list\n");}
                 ;
 
 epsilon         : ;                    

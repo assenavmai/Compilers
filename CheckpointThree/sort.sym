@@ -1,0 +1,14 @@
+Name		Type		Line		Value		Location
+main		void 		   31		    0		   13
+  i		int 		   32		    0		   11
+  t		int 		   22		    0		    9
+sort		void 		   18		    0		   11
+  i		int 		   19		    0		    7
+  k		int 		   19		    0		    8
+minloc		int 		    3		    0		    8
+  i		int 		    4		    0		    4
+  k		int 		    4		    0		    6
+  x		int 		    1		    0		    1
+  a		int 		    3		    0		    1
+low		int 		    3		    0		    2
+high		int 		    3		    0		    3

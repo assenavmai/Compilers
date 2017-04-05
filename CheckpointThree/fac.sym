@@ -1,0 +1,6 @@
+Name		Type		Line		Value		Location
+main		void 		    1		    0		    6
+  x		int 		    2		    0		    3
+fac		int 		    2		    0		    4
+  a		int 		    1		    0		    1
+  b		int 		    1		    0		    2
