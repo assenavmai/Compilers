@@ -67,7 +67,6 @@ struct symhash * searchList(struct symlist * head, char * key) {
 		
 		if(t)
 		{
-			//printf("%s is declared\n", key);
 			return t;
 		}
 	}

@@ -1,32 +1,34 @@
 /*****************************
-* File: 5.cm
+* File: 9.cm
 * Errors in file:
+	* incorrect return statement 
 	* incorrect if-else statment 
 	* incorrect call statement 
 	* additonal unknown symbols found in the code 
+	* unknown function type 
+	* incorrect addition operators 
 
 * Compiler is testing against these errors:
 	* syntactic error for return statement
+	* syntactic error for if statement
+	* syntactic error for call
 	* lexigal analysis
 	* syntactic error for function declaration
+	* syntactic error for addop
 *******************************/
 
-int addthree (int result, int b, int c)
+char addthree (int a, int b, int c)
 {
-	
+	int result;
+
+	while (result != 20)
+	{
+		result = a ++ b + c;
+	}
 	return rev0lt; %%%%
 }
 
 void main (void)
 {
-	int result;
-
-	result = 50;
-
-	while (result > 20)
-	{
-		result = a + b + c;
-		result = result - 5;
-	}
 	output(addthree(1,,3));
 }

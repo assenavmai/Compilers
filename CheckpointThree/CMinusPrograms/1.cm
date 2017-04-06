@@ -5,15 +5,6 @@
 * Compiler is testing against these errors: none
 *******************************/
 
-int gcd (int u, int v)
-{
-	if (v == 0) return u;
-
-	else return gcd(v, u-u/v*v);
-	/*u-u/v*v = = u mod v */
-
-}
-
 int addthree (int a, int b, int c)
 {
 	int result;
@@ -24,6 +15,5 @@ int addthree (int a, int b, int c)
 
 void main (void)
 {
-	output(gcd(4,5));
 	output(addthree(1,2,3));
 }

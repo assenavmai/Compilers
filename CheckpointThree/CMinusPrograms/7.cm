@@ -1,0 +1,22 @@
+/*****************************
+* File: 7.cm
+* Errors in file:
+	* additonal unknown symbols found in the code 
+	* unknown function type
+	*
+
+* Compiler is testing against these errors:
+	* lexigal analysis
+	* syntactic error for function declaration
+	*
+*******************************/
+
+void main (void)
+{
+	???
+	int result;
+	&
+	result = a + b + c;
+	return result;
+}
+}

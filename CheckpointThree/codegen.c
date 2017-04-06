@@ -86,7 +86,7 @@ void genFinale() {
 	emitRM("ST", fp, globalOffset+ofpFO, fp, "push ofp");
 	emitRM("LDA", fp, globalOffset, fp, "push frame");
 	emitRM("LDA", ac, 1, pc, "load ac with ret ptr");
-	printf("Entry %d\n", entry);
+	//printf("Entry %d\n", entry);
 	emitRM_Abs("LDA", pc, entry, "jump to main loc");
 	emitRM("LD", fp, ofpFO, fp, "pop frame");
 	emitComment("End of execution.");
@@ -105,7 +105,7 @@ void genStmt(struct TreeNode * tree) {
 		switch(tree->kind.stmt)
 		{
 			case IfK:
-				printf("\tif\n");
+				//printf("\tif\n");
 
 				if(TraceCode)
 				{
@@ -147,7 +147,7 @@ void genStmt(struct TreeNode * tree) {
 				}
 				break;
 			case ReturnK:
-				printf("\treturn\n");
+				//printf("\treturn\n");
 				isReturn = TRUE;
 				if(TraceCode)
 				{
@@ -166,7 +166,7 @@ void genStmt(struct TreeNode * tree) {
 				}
 				break;
 			case WhileK:
-				printf("\twhile\n");
+				//printf("\twhile\n");
 
 				if(TraceCode)
 				{
@@ -201,7 +201,7 @@ void genStmt(struct TreeNode * tree) {
 				}
 				break;
 			case CmpdK:
-				printf("\tcmpd\n");
+				//printf("\tcmpd\n");
 
 				if(TraceCode)
 				{
@@ -227,7 +227,7 @@ void genStmt(struct TreeNode * tree) {
 				}
 				break;
 			case AssignK:
-				printf("\tassign\n");
+				//printf("\tassign\n");
 
 				if(TraceCode)
 				{
@@ -254,7 +254,7 @@ void genStmt(struct TreeNode * tree) {
 				}
 				break;
 			case CallK:
-				printf("\tcall\n");
+				//printf("\tcall\n");
 
 				if(TraceCode)
 				{
@@ -269,17 +269,17 @@ void genStmt(struct TreeNode * tree) {
 				{
 					if(tree->etype == Array)
 					{
-						printf("call array\n");
+						//printf("call array\n");
 						genExp(child1, TRUE);
 					}
 					else
 					{
-						printf("call non array\n");
+						//printf("call non array\n");
 						genExp(child1, FALSE);
 					}
 
 					emitRM("ST", ac, localOffset + initFO - (numArgs++),fp, "store arg val");	
-					printf("\t\t\tnum args %d\n", numArgs);
+					//printf("\t\t\tnum args %d\n", numArgs);
 					child1 = child1->sibling;				
 				}
 
@@ -298,7 +298,7 @@ void genStmt(struct TreeNode * tree) {
 				else
 				{
 					loc = findMemoryLocation(stack, tree->name);
-					printf("location for call %d %s\n", loc, tree->name);
+					//printf("location for call %d %s\n", loc, tree->name);
 				}
 
 				//loc = -(findMemoryLocation(stack, tree->name));
@@ -370,7 +370,7 @@ void genDecl(struct TreeNode * tree) {
 				}
 				break;
 			case FunK:
-				printf("\tfunc %d\n", tree->params);
+				//printf("\tfunc %d\n", tree->params);
 
 				if(TraceCode)
 				{
@@ -383,7 +383,7 @@ void genDecl(struct TreeNode * tree) {
 				inFunction = TRUE;
 
 				loc = -(findMemoryLocation(stack, tree->name));
-				printf("LOCATION FUNC: %d\n", loc);
+				//printf("LOCATION FUNC: %d\n", loc);
 
 				// load function location
 				funcLoc = emitSkip(1);
@@ -424,7 +424,7 @@ void genDecl(struct TreeNode * tree) {
 
 				break;
 			case ParamK:
-				printf("\tparam\n");
+				//printf("\tparam\n");
 				emitComment("param");
 				--localOffset;
 				++numParams;
@@ -446,7 +446,7 @@ void genExp(struct TreeNode * tree, int isAddress) {
 		switch(tree->kind.exp)
 		{
 			case ConstK:
-				printf("\tconst\n");
+				//printf("\tconst\n");
 
 				if(TraceCode)
 				{
@@ -461,7 +461,7 @@ void genExp(struct TreeNode * tree, int isAddress) {
 				}
 				break;
 			case IdK:
-				printf("\tid\n");
+				//printf("\tid\n");
 
 				if(TraceCode)
 				{
@@ -472,7 +472,7 @@ void genExp(struct TreeNode * tree, int isAddress) {
 				}
 
 				loc = findMemoryLocation(stack, tree->name);
-				printf("idK memloc %d\n", loc);
+				//printf("idK memloc %d\n", loc);
 
 				if(loc >= 0)
 				{
@@ -480,10 +480,10 @@ void genExp(struct TreeNode * tree, int isAddress) {
 				}
 				else
 				{
-					printf("else IDK\n");
+					//printf("else IDK\n");
 					offsetVar = -(findMemoryLocation(stack, tree->name));
 				}
-				printf("OFFSET IDK: %d\n", offsetVar);
+				//printf("OFFSET IDK: %d\n", offsetVar);
 				
 				/*if(tree->isArr == 1)
 				{
@@ -529,7 +529,7 @@ void genExp(struct TreeNode * tree, int isAddress) {
 				if(TraceCode) emitComment("<- id");
 				break;
 			case OpK:
-				printf("\top\n");
+				//printf("\top\n");
 				if(TraceCode)
 				{
 					emitComment("-> op");
@@ -549,23 +549,23 @@ void genExp(struct TreeNode * tree, int isAddress) {
 				switch(tree->op)
 				{
 					case PLUS:
-						printf("add \n");
+						//printf("add \n");
 						emitRO("ADD", ac, ac1, ac, "op +");
 						break;
 					case MINUS:
-						printf("subtract \n");
+						//printf("subtract \n");
 						emitRO("SUB", ac, ac1, ac, "op -");
 						break;
 					case MULT:
-						printf("multi \n");
+						//printf("multi \n");
 						emitRO("MUL", ac, ac1, ac, "op *");
 						break;
 					case DIV:
-						printf("div \n");
+						//printf("div \n");
 						emitRO("DIV", ac, ac1, ac, "op /");
 						break;
 					case LT:
-						printf("less than \n");
+						//printf("less than \n");
 						emitRO("SUB", ac, ac1, ac, "op <");
 						emitRM("JLT", ac, 2, pc, "br if true");
 						emitRM("LDC", ac, 0, ac, "false case");
@@ -573,7 +573,7 @@ void genExp(struct TreeNode * tree, int isAddress) {
 						emitRM("LDC", ac, 1, ac, "true case");
 						break;
 					case LTEQ:
-						printf("less than equal \n");
+						//printf("less than equal \n");
 						emitRO("SUB", ac, ac1, ac, "op <=");
 						emitRM("JLE", ac, 2, pc, "br if true");
 						emitRM("LDC", ac, 0, ac, "false case");
@@ -581,7 +581,7 @@ void genExp(struct TreeNode * tree, int isAddress) {
 						emitRM("LDC", ac, 1, ac, "true case");
 						break;
 					case GT:
-						printf("greater than \n");
+						//printf("greater than \n");
 						emitRO("SUB", ac, ac1, ac, "op >");
 						emitRM("JGT", ac, 2, pc, "br if true");
 						emitRM("LDC", ac, 0, ac, "false case");
@@ -589,7 +589,7 @@ void genExp(struct TreeNode * tree, int isAddress) {
 						emitRM("LDC", ac, 1, ac, "true case");
 						break;
 					case GTEQ:
-						printf("greater than equal \n");
+						//printf("greater than equal \n");
 						emitRO("SUB", ac, ac1, ac, "op <=");
 						emitRM("JGE", ac, 2, pc, "br if true");
 						emitRM("LDC", ac, 0, ac, "false case");
@@ -597,7 +597,7 @@ void genExp(struct TreeNode * tree, int isAddress) {
 						emitRM("LDC", ac, 1, ac, "true case");
 						break;
 					case DOUBEQ:
-						printf("equals \n");
+						//printf("equals \n");
 						emitRO("SUB", ac, ac1, ac, "op ==");
 						emitRM("JEQ", ac, 2, pc, "br if true");
 						emitRM("LDC", ac, 0, ac, "false case");
@@ -605,7 +605,7 @@ void genExp(struct TreeNode * tree, int isAddress) {
 						emitRM("LDC", ac, 1, ac, "true case");
 						break;
 					case NEQ:
-						printf("not equals \n");
+						//printf("not equals \n");
 						emitRO("SUB", ac, ac1, ac, "op !=");
 						emitRM("JNE", ac, 2, pc, "br if true");
 						emitRM("LDC", ac, 0, ac, "false case");
@@ -613,7 +613,7 @@ void genExp(struct TreeNode * tree, int isAddress) {
 						emitRM("LDC", ac, 1, ac, "true case");
 						break;
 					default:
-						printf("bug found %d\n", tree->op);
+						//printf("bug found %d\n", tree->op);
 						emitComment("BUG: Unknown operator");
 				}
 
@@ -635,15 +635,15 @@ void cGen(struct TreeNode * tree) {
 		switch(tree->nodeKind)
 		{
 			case StmtKind:
-				printf("stmt\n");
+				//printf("stmt\n");
 				genStmt(tree);
 				break;
 			case ExpKind:
-				printf("exp\n");
+				//printf("exp\n");
 				genExp(tree, FALSE);
 				break;
 			case DeclKind:
-				printf("decl\n");
+				//printf("decl\n");
 				genDecl(tree);
 				break;
 			default:

@@ -1,29 +1,21 @@
-void pls(void) {
-int x; int y; int z;
- x = 0;
- y = 3;
- z = 2;
+/*****************************
+* File: 1.cm
+* Errors in file: none
 
-/* if(x == 0)
- {
- 	if(y == 3)
- 	{
- 		output(z);
+* Compiler is testing against these errors: none
+*******************************/
 
- 		if(x == 0)
- 		{
- 			output(1);
- 		}
- 	}
- }*/
 
- 	while(y > 0)
- 	{
- 		y = y - 1;
- 		output(y);
- 	}
+int addthree (int a, int b, int c)
+{
+	int result;
+
+	result = a + b + c;
+	return result;
 }
 
-void main(void) {
-	pls();
+void main (void)
+{
+	output(gcd(4,5));
+	output(addthree(1,2,3));
 }

@@ -1,0 +1,28 @@
+/*****************************
+* File: 8.cm
+* Errors in file:
+	* incorrect return statement 
+	* incorrect if-else statment 
+	* incorrect call statement
+
+* Compiler is testing against these errors:
+	* syntactic error for return statement
+	* syntactic error for if statement
+	* syntactic error for call
+*******************************/
+
+int addthree (int a, int b, int c)
+{
+	return r3sult;
+}
+
+void main (void)
+{
+	int result;
+
+	if ( == 0) output(a);
+
+	result = a + b + c;
+
+	output(addthree(1,2,));
+}

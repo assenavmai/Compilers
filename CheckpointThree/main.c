@@ -151,8 +151,8 @@ int main(int argc, char const *argv[])
 			}
 
 		tree = parse();
-		listing = stdout;
-		printSymbolTable(stack);
+		//isting = stdout;
+		//printSymbolTable(stack);
 		codeGeneration(tree, outFile);
 
 

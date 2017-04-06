@@ -1,34 +1,29 @@
 /*****************************
 * File: 4.cm
-* Errors in file:
-	* incorrect return statement (line 27)
-	* incorrect if-else statment (line 15)
-	* incorrect call statement (line 33)
+* Errors in file: none
 
-* Compiler is testing against these errors:
-	* syntactic error for return statement
-	* syntactic error for if statement
-	* syntactic error for call
+* Compiler is testing against these errors: none
 *******************************/
-int gcd (int u, int v)
-{
-	if ( == 0) return u;
-
-	else return gcd(v, u-u/v*v);
-	/*u-u/v*v = = u mod v */
-
-}
-
-int addthree (int a, int b, int c)
-{
-	int result;
-
-	result = a + b + c;
-	return r3sult;
-}
 
 void main (void)
 {
-	output(gcd(4,5));
-	output(addthree(1,2,));
+	int i; int j; int v;
+	int x;
+
+	x = 5;
+	i = 10;
+
+	v = i * 2;
+
+	j = v + i;
+
+	while (x > 0)
+	{
+		x= x - 1;
+
+		if(j > 15)
+		{
+			output (v - 1);
+		}
+	}
 }

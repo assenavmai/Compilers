@@ -131,7 +131,7 @@ var_decl        : type_spec ID {    savedName = copyString(idString);
                         $$.tnode->etype = $1.type;
                         $$.tnode->pos = savedLineNo;
                         $$.tnode->memoryLocation = ++varLoc;
-                       // printf("var decl param %s %d\n", savedName,$$.tnode->memoryLocation);
+                        //printf("var decl param %s %d\n", savedName,$$.tnode->memoryLocation);
 
                         if(searchList(globalList, savedName))
                         {
@@ -193,7 +193,7 @@ fun_decl        : type_spec ID { $$.str = copyString(idString);
                         $$.tnode->params = amountParam;
                         $$.tnode->memoryLocation = ++varLoc + 1;
 
-                      //  printf("func decl location %d\n", varLoc);
+                        //printf("func decl location %d\n", varLoc);
 
                         if(lookup(globalList->table, $3.str))
                         {
@@ -211,7 +211,7 @@ fun_decl        : type_spec ID { $$.str = copyString(idString);
                         }
                         else if(returnValue != 1 && $1.type == 1)
                         {
-                            fprintf(stderr, "line: %d: error: int function '%s' needs to have a return value\n", savedLineNo, $3.str);
+                            //fprintf(stderr, "line: %d: error: int function '%s' needs to have a return value\n", savedLineNo, $3.str);
                         }
                         returnValue = -1;
                         //printSymbolTable(globalList);
@@ -259,14 +259,14 @@ param_list      : param_list COMMA param
 param           : type_spec ID 
                     {
                         varLoc = amountParam + 1;
-                      //  printf("param %d\n", varLoc);
+                        //printf("param %d\n", varLoc);
                         $$.tnode = newDeclNode(ParamK);
                         $$.tnode->pos = lineno;
                         $$.tnode->name = copyString(idString);
                         $$.tnode->etype = $1.type;
                         $$.tnode->memoryLocation = varLoc;
 
-                        printf("%d memLoc param\n", $$.tnode->memoryLocation);
+                        //printf("%d memLoc param\n", $$.tnode->memoryLocation);
 
                         if(lookup(globalList->table, idString))
                         {
@@ -322,7 +322,8 @@ compound_stmt   : LCURL{
                         globalList = deleteNode(globalList);
 
                         position--;
-                    } 
+                    }
+                | LCURL error RCURL { yyerrok; fprintf(stderr, "Error in compound statement\n"); } 
                 ;
 
 local_decl      : local_decl var_decl
@@ -346,7 +347,6 @@ local_decl      : local_decl var_decl
                             $$.tnode = $2.tnode;
                         }
                     }
-                | error var_decl{ yyerrok; fprintf(stderr, "Error in local declaration\n");}
                 | epsilon { $$.tnode = NULL; }
                 ;
 
@@ -467,7 +467,6 @@ expr            : var EQ expr
                     }
                 | simple_expr
                     { $$.tnode = $1.tnode; }
-                | var EQ error {yyerrok; fprintf(stderr, "Error in expression\n");}
                 ;
 
 var             : ID
@@ -478,7 +477,7 @@ var             : ID
                         $$.tnode->memoryLocation = findMemoryLocation(globalList, savedName);
 
                         /*int l = findMemoryLocation(globalList, savedName);*/
-                        printf("OK BOYS %s %d\n", idString, $$.tnode->memoryLocation);
+                        //printf("OK BOYS %s %d\n", idString, $$.tnode->memoryLocation);
 
                         if(!searchList(globalList, idString))
                         {
@@ -545,7 +544,7 @@ simple_expr     : additive_expr relop additive_expr
                     }
                 | additive_expr
                     { $$.tnode = $1.tnode; }
-                | additive_expr relop error {yyerrok; fprintf(stderr, "Error in simple expression\n");}
+
                 ;
 
 relop           : LTEQ
@@ -571,7 +570,6 @@ additive_expr   : additive_expr addop term
                     }
                 | term
                     { $$.tnode = $1.tnode; }
-                | additive_expr error {yyerrok; fprintf(stderr, "Error in additive expression\n");}
                 ;
 
 addop           : PLUS
@@ -589,7 +587,6 @@ term            : term mulop factor
                     }
                 | factor
                     { $$.tnode = $1.tnode; }
-                | term mulop error {yyerrok; fprintf(stderr, "Error in term\n");}
                 ;
 
 mulop           : MULT
@@ -611,7 +608,6 @@ factor          : LPAREN expr RPAREN
                         $$.tnode = newExpNode(ConstK);
                         $$.tnode->val = atoi(numString);
                     }
-                | LPAREN error {yyerrok; fprintf(stderr, "Error in factor\n");}
 
                 ;
 
@@ -623,14 +619,16 @@ call            : ID {  savedName = copyString(idString);
                         $$.tnode->name = savedName;
                         $$.tnode->child[0] = $4.tnode;
                         $$.tnode->pos = savedLineNo;
-                      //  printf("Call %s\n", savedName);
+                        //printf("Call %s\n", savedName);
 
                         // check arguments match with amount of parameters for function
                         // add input and output to sym table
                         // check is $$..params = args, if not error msg
-                        //if(amountArgs != )
-                       
-                      //  printf("amount args %s %d params %d\n", savedName, amountArgs, amountParam);
+                        if(strcmp(savedName, "output") == 0)
+                        {
+                            
+                        }
+                        //printf("amount args %s %d params %d\n", savedName, amountArgs, amountParam);
 
                     }
                 ;
@@ -638,7 +636,6 @@ call            : ID {  savedName = copyString(idString);
 args            : arg_list
                     { $$.tnode = $1.tnode; }
                 | epsilon { $$.tnode = NULL; }
-                | error{yyerrok; fprintf(stderr, "Error in arguements\n");}
                 ;
 
 arg_list        : arg_list COMMA expr
@@ -665,7 +662,6 @@ arg_list        : arg_list COMMA expr
                     }
                 | expr
                     { amountArgs++; $$.tnode = $1.tnode; }
-                | arg_list COMMA error {yyerrok; fprintf(stderr, "Error in arguement list\n");}
                 ;
 
 epsilon         : ;                    

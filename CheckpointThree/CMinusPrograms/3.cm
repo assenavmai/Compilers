@@ -1,34 +1,27 @@
 /*****************************
 * File: 3.cm
-* Errors in file:
-	* additonal unknown symbols found in the code (line 14, 19, 25)
-	* unknown function type (line 22)
-	*
+* Errors in file: none
 
-* Compiler is testing against these errors:
-	* lexigal analysis
-	* syntactic error for function declaration
-	*
+* Compiler is testing against these errors: none
 *******************************/
-int gcd (int u, int v)
-{ ???
-	if (v == 0) return u;
-
-	else return gcd(v, u-u/v*v);
-	/*u-u/v*v = = u mod v */
-				\
-}
-
-char addthree (int a, int b, int c)
-{
-	int result;
-	&
-	result = a + b + c;
-	return result;
-}
 
 void main (void)
 {
-	output(gcd(4,5));
-	output(addthree(1,2,3));
+	int i; int j; int v;
+	i = 10;
+
+	v = i * 2;
+
+	j = v + i;
+
+	if (j > 40)
+	{
+		output (v);
+	}
+	else
+	{
+		output (i);
+	}
+
+	output (j);
 }

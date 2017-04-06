@@ -1,0 +1,25 @@
+/*****************************
+* File: 6.cm
+* Errors in file:
+	* incorrect relational operators 
+	* incorrect multiplication operators 
+	*
+
+* Compiler is testing against these errors:
+	* syntactic error for relop
+	* syntactic error for mulop
+	*
+*******************************/
+
+
+void main (void)
+{
+	int result; int v; int u; int s;
+
+	if (v !== 0) output(v);
+
+	s = u-u/v***v;
+
+	result = a + b + c;
+	return result;
+}

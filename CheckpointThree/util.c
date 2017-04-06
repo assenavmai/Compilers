@@ -361,7 +361,7 @@ int findMemoryLocation(struct symlist * head, char * key) {
 		
 		if(t)
 		{
-			printf("%s is declared\n", key);
+			//printf("%s is declared\n", key);
 			return t->memLocation;
 		}
 	}
